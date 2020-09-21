@@ -48,15 +48,20 @@ angular
     };
 
     $scope.forgotpassword = (form) => {
-      $scope.authObj
-        .$sendPasswordResetEmail(form.email)
-        .then((user) => {
-          $scope.errormsg =
-            "Er is naar het ingevulde adres een email verstuurd met instructies om je wachtwoord te resetten.";
-        })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+      if (!form.email)
+        $scope.errormsg =
+          "Vul een e-mailadres in om je wachtwoord te resetten.";
+      else {
+        $scope.authObj
+          .$sendPasswordResetEmail(form.email)
+          .then((user) => {
+            $scope.errormsg =
+              "Er is naar het ingevulde adres een e-mail verstuurd met instructies om je wachtwoord te resetten.";
+          })
+          .catch((error) => {
+            $scope.errormsg = error;
+          });
+      }
     };
 
     $scope.signin = (form) => {
