@@ -34,12 +34,25 @@ angular
       $scope.authObj
         .$createUserWithEmailAndPassword(form.email, form.password)
         .then((user) => {
+          user.sendEmailVerification();
           $scope.setUserInfo(user, {
             email: form.email,
             name: form.name,
             phone: form.phone,
           });
           $scope.setView("main");
+        })
+        .catch((error) => {
+          $scope.errormsg = error;
+        });
+    };
+
+    $scope.forgotpassword = (form) => {
+      $scope.authObj
+        .$sendPasswordResetEmail(form.email)
+        .then((user) => {
+          $scope.errormsg =
+            "Er is naar het ingevulde adres een email verstuurd met instructies om je wachtwoord te resetten.";
         })
         .catch((error) => {
           $scope.errormsg = error;
