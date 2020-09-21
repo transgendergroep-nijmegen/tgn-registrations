@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
+  <head>
+    <title>Transgendergroep Nijmegen Registraties</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="angular.js"></script>
+    <script src="firebase.js"></script>
+    <script src="angularfire.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body>
+    <div ng-switch="view">
+      <div ng-switch-when="main">
+        <div ng-if="!user">
+          <div>
+            Registreer een account of log in om je in te schrijven voor
+            activiteiten.
+          </div>
+          <div>
+            <button ng-click="setView('register')">Registeren</button>
+            <button ng-click="setView('login')">Inloggen</button>
+          </div>
+        </div>
+        <div ng-if="user">
+          <button ng-click="form = userInfo; setView('set_info')">
+            Gegevens wijzigen
+          </button>
+          <button ng-click="setView('set_password')">
+            Wachtwoord wijzigen
+          </button>
+          <button ng-click="authObj.$signOut()">Uitloggen</button>
+        </div>
+        <div>
+          Door je in te schrijven voor een activiteit, en wanneer je een
+          activiteit bijwoont, geef je aan dat jouw antwoord op de onderstaande
+          vragen 'Nee' is.
+          <ul>
+            <li>
+              Heb je last van Hoesten, Benauwdheidsklachten, Neusverkoudheid, of
+              Koorts van 38 graden of hoger?
+            </li>
+            <li>
+              Heb je op dit moment een huisgenoot met koorts of
+              benauwdheidsklachten?
+            </li>
+            <li>Heb je het coronavirus in de afgelopen 7 dagen gehad?</li>
+            <li>
+              Ben je in thuisisolatie omdat je in direct contact bent geweest
+              met iemand met het coronavirus?
+            </li>
+            <li>
+              Heb je een huisgenoot met het coronavirus en heb je de afgelopen
+              14 dagen contact met hen gehad terwijl de persoon in kwestie nog
+              klachten had?
+            </li>
+          </ul>
+          Je gaat er ook mee akkoord om tijdens de activiteit 1.5 meter afstand
+          te houden van andere deelnemers. Tot slot ga je er mee akkoord dat wij
+          de ingevulde gegevens bewaren tot een maand na de activiteit.
+        </div>
+        <div>
+          <div ng-repeat="event in events">
+            {{event.date}} {{event.name}} {{count_event_signups(event)}}/{{event.capacity}}
+            <span ng-if="user">
+              <span ng-if="!event.signups[user.uid]">
+                <button ng-click="set_user_event_status(user, event, true)" ng-disabled="count_event_signups(event) >= event.capacity">Inschrijven</button>
+              </span>
+              <span ng-if="event.signups[user.uid]">
+                <button ng-click="set_user_event_status(user, event, null)">Uitschrijven</button>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div ng-switch-when="register">
+        <div>Het ingevulde e-mailadres wordt ook je inlognaam.</div>
+        <form name="registerForm">
+          <label>
+            E-mailadres:
+            <input type="email" required ng-model="form.email" />
+          </label>
+          <br />
+          <label>
+            Wachtwoord:
+            <input type="password" required ng-model="form.password" />
+          </label>
+          <br />
+          <label>
+            Volledige naam:
+            <input type="text" required ng-model="form.name" />
+          </label>
+          <br />
+          <label>
+            Telefoonnummer:
+            <input type="tel" required ng-model="form.phone" />
+          </label>
+          <br />
+        </form>
+        <button ng-click="setView('main')">Annuleren</button>
+        <button ng-click="register(form)" ng-disabled="registerForm.$invalid">
+          Registeren
+        </button>
+        <div>{{errormsg}}</div>
+      </div>
+      <div ng-switch-when="login">
+        <form name="loginForm">
+          <label>
+            E-mailadres:
+            <input type="email" required ng-model="form.email" />
+          </label>
+          <br />
+          <label>
+            Wachtwoord:
+            <input type="password" required ng-model="form.password" />
+          </label>
+          <br />
+        </form>
+        <button ng-click="setView('main')">Annuleren</button>
+        <button ng-click="signin(form)" ng-disabled="loginForm.$invalid">
+          Inloggen
+        </button>
+        <div>{{errormsg}}</div>
+      </div>
+      <div ng-switch-when="set_info">
+        <div>Het ingevulde e-mailadres wordt ook je nieuwe inlognaam.</div>
+        <form name="setInfoForm">
+          <label>
+            E-mailadres:
+            <input type="email" required ng-model="form.email" />
+          </label>
+          <br />
+          <label>
+            Volledige naam:
+            <input type="text" required ng-model="form.name" />
+          </label>
+          <br />
+          <label>
+            Telefoonnummer:
+            <input type="tel" required ng-model="form.phone" />
+          </label>
+          <br />
+        </form>
+        <button ng-click="setView('main')">Annuleren</button>
+        <button ng-click="setinfo(form)" ng-disabled="setInfoForm.$invalid">
+          Wijzigen
+        </button>
+        <div>{{errormsg}}</div>
+      </div>
+      <div ng-switch-when="set_password">
+        <form name="setPasswordForm">
+          <label>
+            Nieuw wachtwoord:
+            <input type="password" required ng-model="form.password" />
+          </label>
+          <br />
+        </form>
+        <button ng-click="setView('main')">Annuleren</button>
+        <button ng-click="setpassword(form)" ng-disabled="setPasswordForm.$invalid">
+          Wijzigen
+        </button>
+        <div>{{errormsg}}</div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
