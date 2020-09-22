@@ -11,6 +11,9 @@
   </head>
 
   <body>
+    <div ng-if="user">
+      Ingelogd als: {{user.email}}
+    </div>
     <div ng-switch="view">
       <div ng-switch-when="main">
         <div ng-if="!user">
@@ -19,17 +22,18 @@
             activiteiten.
           </div>
           <div>
-            <button ng-click="setView('register')">Registeren</button>
-            <button ng-click="setView('login')">Inloggen</button>
+            <button ng-click="setForm(null); setView('register')">Registeren</button>
+            <button ng-click="setForm(null); setView('login')">Inloggen</button>
           </div>
         </div>
         <div ng-if="user">
-          <button ng-click="form = userInfo; setView('set_info')">
+          <button ng-click="setForm(userInfo); setView('set_info')">
             Gegevens wijzigen
           </button>
-          <button ng-click="setView('set_password')">
+          <button ng-click="setForm(null); setView('set_password')">
             Wachtwoord wijzigen
           </button>
+          <button ng-click="setForm(null); setView('delete_account')">Account verwijderen</button>
           <button ng-click="authObj.$signOut()">Uitloggen</button>
         </div>
         <div>
@@ -75,6 +79,9 @@
         </div>
       </div>
       <div ng-switch-when="register">
+        <div>
+          Door het aanmaken van een account geef je ons toestemming om je gegevens te bewaren tot je je account verwijderd of maximaal een maand na de laatste activiteit waarvoor je was ingeschreven. We gebruiken je gegevens uitsluitend voor deze inschrijvingen en om zo nodig contact op te nemen in verband met COVID-19.
+        </div>
         <div>Het ingevulde e-mailadres wordt ook je inlognaam.</div>
         <form name="registerForm">
           <label>
@@ -142,6 +149,11 @@
             <input type="tel" required ng-model="form.phone" />
           </label>
           <br />
+          <label>
+            Huidig wachtwoord:
+            <input type="password" required ng-model="form.password" />
+          </label>
+          <br />
         </form>
         <button ng-click="setView('main')">Annuleren</button>
         <button ng-click="setinfo(form)" ng-disabled="setInfoForm.$invalid">
@@ -152,8 +164,13 @@
       <div ng-switch-when="set_password">
         <form name="setPasswordForm">
           <label>
+            Huidig wachtwoord:
+            <input type="password" required ng-model="form.password.old" />
+          </label>
+          <br />
+          <label>
             Nieuw wachtwoord:
-            <input type="password" required ng-model="form.password" />
+            <input type="password" required ng-model="form.password.new" />
           </label>
           <br />
         </form>
@@ -163,7 +180,22 @@
         </button>
         <div>{{errormsg}}</div>
       </div>
+      <div ng-switch-when="delete_account">
+        <form name="deleteAccountForm">
+          <label>
+            Huidig wachtwoord:
+            <input type="password" required ng-model="form.password" />
+          </label>
+          <br />
+        </form>
+        <button ng-click="setView('main')">Annuleren</button>
+        <button ng-click="deleteaccount(form)" ng-disabled="deleteAccountForm.$invalid">
+          Account verwijderen
+        </button>
+        <div>{{errormsg}}</div>
+      </div>
     </div>
+  </div>
   </div>
   </body>
 </html>

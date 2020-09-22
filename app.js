@@ -77,14 +77,21 @@ angular
 
     $scope.setinfo = (form) => {
       $scope.authObj
-        .$updateEmail(form.email)
-        .then(() => {
-          $scope.setUserInfo($scope.user, {
-            email: form.email,
-            name: form.name,
-            phone: form.phone,
-          });
-          $scope.setView("main");
+        .$signInWithEmailAndPassword($scope.user.email, form.password)
+        .then((user) => {
+          $scope.authObj
+            .$updateEmail(form.email)
+            .then(() => {
+              $scope.setUserInfo($scope.user, {
+                email: form.email,
+                name: form.name,
+                phone: form.phone,
+              });
+              $scope.setView("main");
+            })
+            .catch((error) => {
+              $scope.errormsg = error;
+            });
         })
         .catch((error) => {
           $scope.errormsg = error;
@@ -101,9 +108,34 @@ angular
 
     $scope.setpassword = (form) => {
       $scope.authObj
-        .$updatePassword(form.password)
-        .then(() => {
-          $scope.setView("main");
+        .$signInWithEmailAndPassword($scope.user.email, form.password.old)
+        .then((user) => {
+          $scope.authObj
+            .$updatePassword(form.password.new)
+            .then(() => {
+              $scope.setView("main");
+            })
+            .catch((error) => {
+              $scope.errormsg = error;
+            });
+        })
+        .catch((error) => {
+          $scope.errormsg = error;
+        });
+    };
+
+    $scope.deleteaccount = (form) => {
+      $scope.authObj
+        .$signInWithEmailAndPassword($scope.user.email, form.password)
+        .then((user) => {
+          $scope.authObj
+            .$deleteUser()
+            .then(() => {
+              $scope.setView("main");
+            })
+            .catch((error) => {
+              $scope.errormsg = error;
+            });
         })
         .catch((error) => {
           $scope.errormsg = error;
@@ -119,5 +151,9 @@ angular
 
     $scope.count_event_signups = (event) => {
       return event.fake_signups + Object.keys(event.signups ?? []).length;
+    };
+
+    $scope.setForm = (value) => {
+      $scope.form = value;
     };
   });

@@ -1,0 +1,12 @@
+- mail spam probleem oplossing checken (DNS is aan het verversen)
+- admin pagina
+- betere telefoon invoer (geen letters etc)
+- email-verificatie vereist maken voor inschrijven
+- activiteiten sorteren op datum
+- styling
+- security regels
+- cronjobs (daily)
+    - delete past activities (older than a month)
+    - delete deleted accounts without past activities
+- admin page
+- code verbeteren
