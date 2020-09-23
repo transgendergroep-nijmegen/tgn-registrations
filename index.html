@@ -3,134 +3,346 @@
   <head>
     <title>Transgendergroep Nijmegen Registraties</title>
     <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="lib/bootstrap.css" />
+    <link rel="stylesheet" href="lib/bootstrap-toggle.min.css" />
     <link rel="stylesheet" href="style.css" />
-    <script src="angular.js"></script>
-    <script src="firebase.js"></script>
-    <script src="angularfire.js"></script>
+    <script src="lib/angular.js"></script>
+    <script src="lib/firebase.js"></script>
+    <script src="lib/angularfire.js"></script>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/bootstrap-toggle.min.js"></script>
     <script src="app.js"></script>
   </head>
 
-  <body>
-    <div ng-if="user">
-      Ingelogd als: {{user.email}}
-    </div>
-    <div ng-switch="view">
-      <div ng-switch-when="main">
-        <div ng-if="!user">
-          <div>
-            Registreer een account of log in om je in te schrijven voor
-            activiteiten.
-          </div>
-          <div>
-            <button ng-click="setForm(null); setView('register')">Registeren</button>
-            <button ng-click="setForm(null); setView('login')">Inloggen</button>
-          </div>
-        </div>
-        <div ng-if="user">
-          <button ng-click="setForm(userInfo); setView('set_info')">
-            Gegevens wijzigen
-          </button>
-          <button ng-click="setForm(null); setView('set_password')">
-            Wachtwoord wijzigen
-          </button>
-          <button ng-click="setForm(null); setView('delete_account')">Account verwijderen</button>
-          <button ng-click="authObj.$signOut()">Uitloggen</button>
-        </div>
-        <div>
-          Door je in te schrijven voor een activiteit, en wanneer je een
-          activiteit bijwoont, geef je aan dat jouw antwoord op de onderstaande
-          vragen 'Nee' is.
-          <ul>
-            <li>
-              Heb je last van Hoesten, Benauwdheidsklachten, Neusverkoudheid, of
-              Koorts van 38 graden of hoger?
+  <body class="text-justify">
+    <div class="container">
+      <div class="card mt-3">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a
+                class="nav-link active"
+                data-toggle="tab"
+                href="#events"
+                role="tab"
+                ><b>Activiteiten</b></a
+              >
             </li>
-            <li>
-              Heb je op dit moment een huisgenoot met koorts of
-              benauwdheidsklachten?
+            <li ng-if="!user" class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#register"
+                ng-click="assign('form', {})"
+                role="tab"
+                >Registreren</a
+              >
             </li>
-            <li>Heb je het coronavirus in de afgelopen 7 dagen gehad?</li>
-            <li>
-              Ben je in thuisisolatie omdat je in direct contact bent geweest
-              met iemand met het coronavirus?
+            <li ng-if="!user" class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#login"
+                ng-click="assign('form', {})"
+                role="tab"
+                >Inloggen</a
+              >
             </li>
-            <li>
-              Heb je een huisgenoot met het coronavirus en heb je de afgelopen
-              14 dagen contact met hen gehad terwijl de persoon in kwestie nog
-              klachten had?
+            <li ng-if="user" class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#change_info"
+                role="tab"
+                >Gegevens wijzigen</a
+              >
+            </li>
+            <li ng-if="user" class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#change_password"
+                role="tab"
+                >Wachtwoord wijzigen</a
+              >
+            </li>
+            <li ng-if="user" class="nav-item" role="presentation">
+              <a
+                class="nav-link"
+                data-toggle="tab"
+                href="#delete_account"
+                role="tab"
+                >Account verwijderen</a
+              >
+            </li>
+            <li ng-if="user" class="nav-item" role="presentation">
+              <a
+                class="nav-link align-bottom"
+                href=""
+                ng-click="signout()"
+                role="tab"
+                >Uitloggen</a
+              >
             </li>
           </ul>
-          Je gaat er ook mee akkoord om tijdens de activiteit 1.5 meter afstand
-          te houden van andere deelnemers. Tot slot ga je er mee akkoord dat wij
-          de ingevulde gegevens bewaren tot een maand na de activiteit.
         </div>
-        <div>
-          <div ng-repeat="event in events">
-            {{event.date}} {{event.name}} {{count_event_signups(event)}}/{{event.capacity}}
-            <span ng-if="user">
-              <span ng-if="!event.signups[user.uid]">
-                <button ng-click="set_user_event_status(user, event, true)" ng-disabled="count_event_signups(event) >= event.capacity">Inschrijven</button>
-              </span>
-              <span ng-if="event.signups[user.uid]">
-                <button ng-click="set_user_event_status(user, event, null)">Uitschrijven</button>
-              </span>
-            </span>
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="events" role="tabpanel">
+            <div class="card-body">
+              <div ng-if="!user" class="alert alert-info" role="alert">
+                Registreer een account of log in om je in te kunnen schrijven
+                voor activiteiten.
+              </div>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Activiteit</th>
+                    <th scope="col" class="text-center">Inschrijvingen</th>
+                    <th ng-if="user" scope="col" class="text-center">Jij</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    ng-repeat="event in events"
+                    ng-class="{'table-info': event.signups[user.uid]}"
+                  >
+                    <td>{{event.date}}</td>
+                    <td><a href="{{event.link}}">{{event.name}}</a></td>
+                    <td>
+                      <div class="row">
+                        <div
+                          class="col-xl-3 col-lg-4 col-md-5 col-sm-6 text-right pr-1"
+                        >
+                          <span
+                            class="badge badge"
+                            ng-class="{
+                              'badge-primary': count_event_signups(event) < event.capacity,
+                              'badge-secondary': count_event_signups(event) >= event.capacity,
+                            }"
+                            style="width: 5em; float: right; text-align: center"
+                            >{{count_event_signups(event)}}/{{event.capacity}}</span
+                          >
+                        </div>
+                        <div
+                          class="col d-none d-sm-block align-self-center pl-1"
+                        >
+                          <div class="progress">
+                            <div
+                              class="progress-bar"
+                              ng-class="{
+                                'bg-primary': count_event_signups(event) < event.capacity,
+                                'bg-secondary': count_event_signups(event) >= event.capacity,
+                              }"
+                              role="progressbar"
+                              ng-style="{width: (count_event_signups(event) / event.capacity * 100) + '%' }"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td ng-if="user" class="text-center user-select-none">
+                      <div class="custom-control custom-switch">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="customSwitch_{{event.$id}}"
+                          ng-model="event.signups[user.uid]"
+                          ng-click="set_user_event_status(user, event, $event.target.checked ? true : null)"
+                          ng-disabled="count_event_signups(event) >= event.capacity && !event.signups[user.uid]"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="customSwitch_{{event.$id}}"
+                        ></label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="register" role="tabpanel">
+            <div class="card-body">
+              <div class="alert alert-info" role="alert">
+                Door het aanmaken van een account geef je ons toestemming om je
+                gegevens te bewaren tot je je account verwijderd of maximaal een
+                maand na de laatste activiteit waarvoor je was ingeschreven. We
+                gebruiken je gegevens uitsluitend voor deze inschrijvingen en om
+                zo nodig contact op te nemen in verband met COVID-19.
+              </div>
+              <div class="alert alert-info" role="alert">
+                Het ingevulde e-mailadres wordt ook je inlognaam.
+              </div>
+              <form name="registerForm">
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >E-mailadres</label
+                  >
+                  <input
+                    type="email"
+                    class="col form-control"
+                    required
+                    ng-model="form.email"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Wachtwoord</label
+                  >
+                  <input
+                    type="password"
+                    class="col form-control"
+                    required
+                    ng-model="form.password"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Volledige naam</label
+                  >
+                  <input
+                    type="text"
+                    class="col form-control"
+                    required
+                    ng-model="form.name"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Telefoonnummer</label
+                  >
+                  <input
+                    type="tel"
+                    class="col form-control"
+                    required
+                    ng-model="form.phone"
+                  />
+                </div>
+              </form>
+              <div>{{errormsg}}</div>
+            </div>
+            <div class="card-footer">
+              <div class="row">
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 h-100"
+                    ng-click="register(form)"
+                    ng-disabled="registerForm.$invalid"
+                  >
+                    Registreren
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="login" role="tabpanel">
+            <div class="card-body">
+              <form name="loginForm">
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >E-mailadres</label
+                  >
+                  <input
+                    type="email"
+                    class="col form-control"
+                    required
+                    ng-model="form.email"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Wachtwoord</label
+                  >
+                  <input
+                    type="password"
+                    class="col form-control"
+                    required
+                    ng-model="form.password"
+                  />
+                </div>
+              </form>
+              <div>{{errormsg}}</div>
+            </div>
+            <div class="card-footer">
+              <div class="row">
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 h-100"
+                    ng-click="signin(form)"
+                    ng-disabled="loginForm.$invalid"
+                  >
+                    Inloggen
+                  </button>
+                </div>
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-warning w-100 h-100"
+                    ng-click="forgotpassword(form)"
+                  >
+                    Wachtwoord vergeten?
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="change_info" role="tabpanel"></div>
+
+          <div class="tab-pane" id="change_password" role="tabpanel">a</div>
+
+          <div class="tab-pane" id="delete_account" role="tabpanel">b</div>
+        </div>
+      </div>
+
+      <div ng-if="userInfo.admin" class="card mt-3">
+        <div class="card-header pt-0">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <h5 class="m-2">Administratie</h5>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a
+                class="nav-link align-bottom"
+                data-toggle="tab"
+                href="#admin_activities"
+                role="tab"
+                >Activiteiten</a
+              >
+            </li>
+            <li class="nav-item mr-auto" role="presentation">
+              <a
+                class="nav-link align-bottom"
+                data-toggle="tab"
+                href="#admin_users"
+                role="tab"
+                >Gebruikers</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane card-body" id="admin_activities" role="tabpanel">
+            x
+          </div>
+          <div class="tab-pane card-body" id="admin_users" role="tabpanel">
+            y
           </div>
         </div>
       </div>
-      <div ng-switch-when="register">
-        <div>
-          Door het aanmaken van een account geef je ons toestemming om je gegevens te bewaren tot je je account verwijderd of maximaal een maand na de laatste activiteit waarvoor je was ingeschreven. We gebruiken je gegevens uitsluitend voor deze inschrijvingen en om zo nodig contact op te nemen in verband met COVID-19.
-        </div>
-        <div>Het ingevulde e-mailadres wordt ook je inlognaam.</div>
-        <form name="registerForm">
-          <label>
-            E-mailadres:
-            <input type="email" required ng-model="form.email" />
-          </label>
-          <br />
-          <label>
-            Wachtwoord:
-            <input type="password" required ng-model="form.password" />
-          </label>
-          <br />
-          <label>
-            Volledige naam:
-            <input type="text" required ng-model="form.name" />
-          </label>
-          <br />
-          <label>
-            Telefoonnummer:
-            <input type="tel" required ng-model="form.phone" />
-          </label>
-          <br />
-        </form>
-        <button ng-click="setView('main')">Annuleren</button>
-        <button ng-click="register(form)" ng-disabled="registerForm.$invalid">
-          Registeren
-        </button>
-        <div>{{errormsg}}</div>
-      </div>
-      <div ng-switch-when="login">
-        <form name="loginForm">
-          <label>
-            E-mailadres:
-            <input type="email" required ng-model="form.email" />
-          </label>
-          <br />
-          <label>
-            Wachtwoord:
-            <input type="password" required ng-model="form.password" />
-          </label>
-          <br />
-        </form>
-        <button ng-click="setView('main')">Annuleren</button>
-        <button ng-click="forgotpassword(form)">Wachtwoord vergeten</button>
-        <button ng-click="signin(form)" ng-disabled="loginForm.$invalid">
-          Inloggen
-        </button>
-        <div>{{errormsg}}</div>
-      </div>
+    </div>
+
+    <!-- old below -->
+
+    <div ng-switch="view">
       <div ng-switch-when="set_info">
         <div>Het ingevulde e-mailadres wordt ook je nieuwe inlognaam.</div>
         <form name="setInfoForm">
@@ -161,6 +373,7 @@
         </button>
         <div>{{errormsg}}</div>
       </div>
+
       <div ng-switch-when="set_password">
         <form name="setPasswordForm">
           <label>
@@ -175,11 +388,15 @@
           <br />
         </form>
         <button ng-click="setView('main')">Annuleren</button>
-        <button ng-click="setpassword(form)" ng-disabled="setPasswordForm.$invalid">
+        <button
+          ng-click="setpassword(form)"
+          ng-disabled="setPasswordForm.$invalid"
+        >
           Wijzigen
         </button>
         <div>{{errormsg}}</div>
       </div>
+
       <div ng-switch-when="delete_account">
         <form name="deleteAccountForm">
           <label>
@@ -189,13 +406,29 @@
           <br />
         </form>
         <button ng-click="setView('main')">Annuleren</button>
-        <button ng-click="deleteaccount(form)" ng-disabled="deleteAccountForm.$invalid">
+        <button
+          ng-click="deleteaccount(form)"
+          ng-disabled="deleteAccountForm.$invalid"
+        >
           Account verwijderen
         </button>
         <div>{{errormsg}}</div>
       </div>
     </div>
-  </div>
-  </div>
+
+    <div
+      class="toast"
+      style="position: absolute; bottom: 0; right: 0"
+      role="alert"
+      data-delay="5000"
+    >
+      <div class="toast-header">
+        <strong class="mr-auto">Waarschuwing</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">{{toast_text}}</div>
+    </div>
   </body>
 </html>

@@ -7,11 +7,9 @@ firebase.initializeApp({
 angular
   .module("tgn-registrations", ["firebase"])
   .controller("RegistrationsCtrl", ($scope, $firebaseAuth, $firebaseArray) => {
-    $scope.view = "main";
     $scope.authObj = $firebaseAuth();
     $scope.events = $firebaseArray(firebase.database().ref("events"));
-
-    $scope.Object = Object;
+    $scope.users = $firebaseArray(firebase.database().ref("users"));
 
     $scope.authObj.$onAuthStateChanged((user) => {
       $scope.user = user;
@@ -25,11 +23,6 @@ angular
           });
     });
 
-    $scope.setView = (view) => {
-      $scope.errormsg = null;
-      $scope.view = view;
-    };
-
     $scope.register = (form) => {
       $scope.authObj
         .$createUserWithEmailAndPassword(form.email, form.password)
@@ -40,39 +33,53 @@ angular
             name: form.name,
             phone: form.phone,
           });
-          $scope.setView("main");
+          $scope.showTab("events");
         })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+        .catch($scope.show_toast);
     };
 
     $scope.forgotpassword = (form) => {
-      if (!form.email)
-        $scope.errormsg =
-          "Vul een e-mailadres in om je wachtwoord te resetten.";
-      else {
+      if (!form.email) {
+        $scope.show_toast(
+          "Vul een e-mailadres in om je wachtwoord te resetten."
+        );
+      } else {
         $scope.authObj
           .$sendPasswordResetEmail(form.email)
           .then((user) => {
-            $scope.errormsg =
-              "Er is naar het ingevulde adres een e-mail verstuurd met instructies om je wachtwoord te resetten.";
+            $scope.show_toast(
+              "Er is naar het ingevulde adres een e-mail verstuurd met instructies om je wachtwoord te resetten."
+            );
           })
-          .catch((error) => {
-            $scope.errormsg = error;
-          });
+          .catch($scope.show_toast);
       }
+    };
+
+    $scope.show_toast = (text) => {
+      $scope.toast_text = text;
+      $(".toast").toast("show");
     };
 
     $scope.signin = (form) => {
       $scope.authObj
         .$signInWithEmailAndPassword(form.email, form.password)
         .then((user) => {
-          $scope.setView("main");
+          $scope.showTab("events");
         })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+        .catch($scope.show_toast);
+    };
+
+    $scope.signout = () => {
+      $scope.authObj.$signOut();
+      $scope.showTab("events");
+    };
+
+    $scope.showTab = (tab) => {
+      $('.nav-tabs a[href="#' + tab + '"]').tab("show");
+    };
+
+    $scope.assign = (varName, value) => {
+      $scope[varName] = value;
     };
 
     $scope.setinfo = (form) => {
@@ -89,13 +96,9 @@ angular
               });
               $scope.setView("main");
             })
-            .catch((error) => {
-              $scope.errormsg = error;
-            });
+            .catch($scope.show_toast);
         })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+        .catch($scope.show_toast);
     };
 
     $scope.setUserInfo = (user, userInfo) => {
@@ -115,13 +118,9 @@ angular
             .then(() => {
               $scope.setView("main");
             })
-            .catch((error) => {
-              $scope.errormsg = error;
-            });
+            .catch($scope.show_toast);
         })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+        .catch($scope.show_toast);
     };
 
     $scope.deleteaccount = (form) => {
@@ -133,13 +132,9 @@ angular
             .then(() => {
               $scope.setView("main");
             })
-            .catch((error) => {
-              $scope.errormsg = error;
-            });
+            .catch($scope.show_toast);
         })
-        .catch((error) => {
-          $scope.errormsg = error;
-        });
+        .catch($scope.show_toast);
     };
 
     $scope.set_user_event_status = (user, event, status) => {
@@ -157,3 +152,14 @@ angular
       $scope.form = value;
     };
   });
+
+// jQuery(document).ready(($) => {
+//   // Add functionality to de-active navbar links after clicking.
+//   $("[data-toggle=tab]").click(function () {
+//     if ($(this).hasClass("active")) {
+//       $(this).removeClass("active"); // disable navbar link
+//       $($(this).attr("href")).removeClass("active"); // disable tab content
+//       return false; // keep link from being activated by the same click
+//     }
+//   });
+// });

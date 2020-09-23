@@ -1,12 +1,18 @@
-- mail spam probleem oplossing checken (DNS is aan het verversen)
 - admin pagina
-- betere telefoon invoer (geen letters etc)
-- email-verificatie vereist maken voor inschrijven
+    - activiteit aanmaken/wijzigen/verwijderen
+    - lijst van ingeschreven mensen per activiteit
+    - lijst van gebruikers met geschiedenis van userinfo
+- email-verificatie vereist maken voor inschrijven:
+    - https://stackoverflow.com/questions/50223818/firebase-firestore-security-rules-allow-if-email-verified-without-custom-tok
+    - https://firebase.google.com/docs/reference/security/database/#authtoken
 - activiteiten sorteren op datum
 - styling
 - security regels
+    - https://firebase.google.com/docs/reference/security/database#-_negate_or_subtract
 - cronjobs (daily)
     - delete past activities (older than a month)
     - delete deleted accounts without past activities
-- admin page
 - code verbeteren
+- terug naar hosten op github? (om alle firebase sources op één plek te houden)
+
+
