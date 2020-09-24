@@ -4,203 +4,793 @@
     <title>Transgendergroep Nijmegen Registraties</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="lib/bootstrap.css" />
-    <link rel="stylesheet" href="lib/bootstrap-toggle.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap-toggle.css" />
     <!-- <link rel="stylesheet" href="style.css" /> -->
     <script src="lib/angular.js"></script>
     <script src="lib/firebase.js"></script>
     <script src="lib/angularfire.js"></script>
     <script src="lib/jquery.js"></script>
-    <script src="lib/bootstrap.js"></script>
-    <script src="lib/bootstrap-toggle.min.js"></script>
+    <script src="lib/bootstrap.bundle.js"></script>
+    <script src="lib/bootstrap-toggle.js"></script>
     <script src="app.js"></script>
   </head>
 
   <body class="text-justify">
-    <div class="container">
-      <div class="card mt-3">
-        <div class="card-header">
-          <ul class="nav nav-tabs card-header-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
+    <div class="card m-3">
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link active"
+              data-toggle="tab"
+              href="#events"
+              role="tab"
+            >
+              <b>Activiteiten</b>
+            </a>
+          </li>
+          <li ng-if="!user" class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              data-toggle="tab"
+              href="#register"
+              ng-click="assign('form', {})"
+              role="tab"
+            >
+              Registreren
+            </a>
+          </li>
+          <li ng-if="!user" class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              data-toggle="tab"
+              href="#login"
+              ng-click="assign('form', {})"
+              role="tab"
+            >
+              Inloggen
+            </a>
+          </li>
+          <li ng-if="user" class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              data-toggle="dropdown"
+              href="#"
+              role="button"
+            >
+              Account
+            </a>
+            <div class="dropdown-menu">
               <a
-                class="nav-link active"
-                data-toggle="tab"
-                href="#events"
-                role="tab"
-                ><b>Activiteiten</b></a
-              >
-            </li>
-            <li ng-if="!user" class="nav-item" role="presentation">
-              <a
-                class="nav-link"
-                data-toggle="tab"
-                href="#register"
-                ng-click="assign('form', {})"
-                role="tab"
-                >Registreren</a
-              >
-            </li>
-            <li ng-if="!user" class="nav-item" role="presentation">
-              <a
-                class="nav-link"
-                data-toggle="tab"
-                href="#login"
-                ng-click="assign('form', {})"
-                role="tab"
-                >Inloggen</a
-              >
-            </li>
-            <li ng-if="user" class="nav-item" role="presentation">
-              <a
-                class="nav-link"
+                class="dropdown-item"
                 data-toggle="tab"
                 href="#change_info"
-                role="tab"
-                >Gegevens wijzigen</a
+                ng-click="assign('form', userInfo)"
               >
-            </li>
-            <li ng-if="user" class="nav-item" role="presentation">
+                Gegevens wijzigen
+              </a>
               <a
-                class="nav-link"
+                class="dropdown-item"
                 data-toggle="tab"
                 href="#change_password"
-                role="tab"
-                >Wachtwoord wijzigen</a
+                ng-click="assign('form', {})"
               >
-            </li>
-            <li ng-if="user" class="nav-item" role="presentation">
+                Wachtwoord wijzigen
+              </a>
               <a
-                class="nav-link"
+                class="dropdown-item"
                 data-toggle="tab"
                 href="#delete_account"
-                role="tab"
-                >Account verwijderen</a
+                ng-click="assign('form', {})"
               >
-            </li>
-            <li ng-if="user" class="nav-item" role="presentation">
+                Account verwijderen
+              </a>
+            </div>
+          </li>
+          <li ng-if="true || userInfo.admin" class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              data-toggle="dropdown"
+              href="#"
+              role="button"
+            >
+              Admin
+            </a>
+            <div class="dropdown-menu">
               <a
-                class="nav-link align-bottom"
-                href=""
-                ng-click="signout()"
-                role="tab"
-                >Uitloggen</a
+                class="dropdown-item"
+                data-toggle="tab"
+                href="#admin_signups"
+                ng-click="assign('selected_event', null)"
               >
-            </li>
-          </ul>
+                Inschrijvingen
+              </a>
+              <a
+                class="dropdown-item"
+                data-toggle="tab"
+                href="#admin_new_event"
+                ng-click="assign('form', {})"
+              >
+                Nieuwe activiteit
+              </a>
+              <a
+                class="dropdown-item"
+                data-toggle="tab"
+                href="#admin_events"
+                ng-click="assign('selected_event', null); assign('edit_event', null);"
+              >
+                Activiteiten
+              </a>
+              <a
+                class="dropdown-item"
+                data-toggle="tab"
+                href="#admin_users"
+                ng-click="assign('selected_user', null); assign('edit_user', null);"
+              >
+                Accounts
+              </a>
+            </div>
+          </li>
+          <li ng-if="user" class="nav-item" role="presentation">
+            <a
+              class="nav-link align-bottom"
+              href=""
+              ng-click="signout()"
+              role="tab"
+            >
+              Uitloggen
+              <svg class="bi" width="16" height="16">
+                <use
+                  xlink:href="lib/bootstrap-icons.svg#arrow-right-square-fill"
+                />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="events" role="tabpanel">
+          <div class="card-body">
+            <div ng-if="!user" class="alert alert-info" role="alert">
+              Registreer een account of log in om je in te kunnen schrijven voor
+              activiteiten.
+            </div>
+
+            <div
+              ng-if="user && !user.emailVerified"
+              class="alert alert-info"
+              role="alert"
+            >
+              Volg de instructies in de bevestigings-e-mail om de
+              accountregistratie af te ronden.
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Datum</th>
+                  <th scope="col">Activiteit</th>
+                  <th scope="col" style="width: 100%">Inschrijvingen</th>
+                  <th
+                    ng-if="user.emailVerified"
+                    scope="col"
+                    class="text-center"
+                  >
+                    Jij
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  ng-repeat="event in events | orderBy:'date'"
+                  ng-if="event.date * 1000 > now"
+                  ng-class="{'table-info': event.signups[user.uid]}"
+                >
+                  <td>{{event.date*1000 | date:"dd/MM/yyyy"}}</td>
+                  <td><a href="{{event.link}}">{{event.name}}</a></td>
+                  <td>
+                    <div class="row">
+                      <div class="col-auto pr-1">
+                        <span
+                          class="badge badge"
+                          ng-class="count_event_signups(event) < event.capacity ? 'badge-primary' : 'badge-secondary'"
+                          style="width: 5em; float: right; text-align: center"
+                          >{{count_event_signups(event)}}/{{event.capacity}}</span
+                        >
+                      </div>
+                      <div class="col pl-1">
+                        <div class="progress">
+                          <div
+                            class="progress-bar"
+                            ng-class="count_event_signups(event) < event.capacity ? 'bg-primary' : 'bg-secondary'"
+                            role="progressbar"
+                            ng-style="{width: (count_event_signups(event) / event.capacity * 100) + '%' }"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td ng-if="user.emailVerified" class="user-select-none ml-2">
+                    <div class="custom-control custom-switch">
+                      <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        id="customSwitch_{{event.$id}}"
+                        ng-model="event.signups[user.uid]"
+                        ng-click="set_user_event_status(user.uid, event, $event.target.checked ? true : null)"
+                        ng-disabled="count_event_signups(event) >= event.capacity && !event.signups[user.uid]"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="customSwitch_{{event.$id}}"
+                      ></label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="tab-content">
-          <div class="tab-pane active" id="events" role="tabpanel">
-            <div class="card-body">
-              <div ng-if="!user" class="alert alert-info" role="alert">
-                Registreer een account of log in om je in te kunnen schrijven
-                voor activiteiten.
+        <div class="tab-pane" id="register" role="tabpanel">
+          <div class="card-body">
+            <div class="alert alert-info" role="alert">
+              Door het aanmaken van een account geef je ons toestemming om je
+              gegevens te bewaren tot je je account verwijderd of maximaal een
+              maand na de laatste activiteit waarvoor je was ingeschreven. We
+              gebruiken je gegevens uitsluitend voor deze inschrijvingen en om
+              zo nodig contact op te nemen in verband met COVID-19.
+            </div>
+            <div class="alert alert-info" role="alert">
+              <p>
+                Door je in te schrijven voor een activiteit, en wanneer je een
+                activiteit bijwoont, geef je aan dat jouw antwoord op de
+                onderstaande vragen 'Nee' is.
+              </p>
+              <ul>
+                <li>
+                  Heb je last van Hoesten, Benauwdheidsklachten,
+                  Neusverkoudheid, of Koorts van 38 graden of hoger?
+                </li>
+                <li>
+                  Heb je op dit moment een huisgenoot met koorts of
+                  benauwdheidsklachten?
+                </li>
+                <li>Heb je het coronavirus in de afgelopen 7 dagen gehad?</li>
+                <li>
+                  Ben je in thuisisolatie omdat je in direct contact bent
+                  geweest met iemand met het coronavirus?
+                </li>
+                <li>
+                  Heb je een huisgenoot met het coronavirus en heb je de
+                  afgelopen 14 dagen contact met hen gehad terwijl de persoon in
+                  kwestie nog klachten had?
+                </li>
+              </ul>
+              Je gaat er ook mee akkoord om tijdens de activiteit 1.5 meter
+              afstand te houden van andere deelnemers.
+            </div>
+            <div class="alert alert-info" role="alert">
+              Het ingevulde e-mailadres wordt ook je inlognaam.
+            </div>
+            <form id="registerForm" name="registerForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >E-mailadres</label
+                >
+                <input
+                  type="email"
+                  class="col form-control"
+                  required
+                  ng-model="form.email"
+                />
               </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Volledige naam</label
+                >
+                <input
+                  type="text"
+                  class="col form-control"
+                  required
+                  ng-model="form.name"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Telefoonnummer</label
+                >
+                <input
+                  type="tel"
+                  class="col form-control"
+                  required
+                  ng-model="form.phone"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="registerForm"
+                  value="Registreren"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="register(form)"
+                  ng-disabled="working || registerForm.$invalid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="tab-pane" id="login" role="tabpanel">
+          <div class="card-body">
+            <form id="loginForm" name="loginForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >E-mailadres</label
+                >
+                <input
+                  type="email"
+                  class="col form-control"
+                  required
+                  ng-model="form.email"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="loginForm"
+                  value="Inloggen"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="signin(form)"
+                  ng-disabled="working || loginForm.$invalid"
+                />
+              </div>
+              <div class="col">
+                <button
+                  type="button"
+                  class="btn btn-warning w-100 h-100"
+                  ng-click="forgotpassword(form)"
+                >
+                  Wachtwoord vergeten?
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="change_info" role="tabpanel">
+          <div class="card-body">
+            <h5>Gegevens wijzigen</h5>
+            <div class="alert alert-info" role="alert">
+              Het ingevulde e-mailadres wordt ook je inlognaam.
+            </div>
+            <form id="setInfoForm" name="setInfoForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >E-mailadres</label
+                >
+                <input
+                  type="email"
+                  class="col form-control"
+                  required
+                  ng-model="form.email"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Volledige naam</label
+                >
+                <input
+                  type="text"
+                  class="col form-control"
+                  required
+                  ng-model="form.name"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Telefoonnummer</label
+                >
+                <input
+                  type="tel"
+                  class="col form-control"
+                  required
+                  ng-model="form.phone"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Huidig wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="setInfoForm"
+                  value="Wijzigingen opslaan"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="setinfo(form)"
+                  ng-disabled="working || setInfoForm.$invalid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="change_password" role="tabpanel">
+          <div class="card-body">
+            <h5>Wachtwoord wijzigen</h5>
+            <form id="setPasswordForm" name="setPasswordForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Huidig wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password.old"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Nieuw wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password.new"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="setPasswordForm"
+                  value="Nieuw wachtwoord opslaan"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="setpassword(form)"
+                  ng-disabled="working || setPasswordForm.$invalid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="delete_account" role="tabpanel">
+          <div class="card-body">
+            <h5>Account verwijderen</h5>
+            <div class="alert alert-danger" role="alert">
+              Weet je zeker dat je je account wilt verwijderen? Dit kan niet
+              ongedaan worden gemaakt. Eventuele inschrijvingen voor
+              activiteiten worden verwijderd.
+            </div>
+            <form id="deleteAccountForm" name="deleteAccountForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Wachtwoord</label
+                >
+                <input
+                  type="password"
+                  class="col form-control"
+                  required
+                  ng-model="form.password"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="deleteAccountForm"
+                  value="Account verwijderen"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="deleteaccount(form)"
+                  ng-disabled="working || deleteAccountForm.$invalid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="admin_signups" role="tabpanel">
+          <div class="card-body">
+            <h5>Inschrijvingen</h5>
+            <select
+              class="custom-select"
+              ng-model="selected_event"
+              ng-options="eventListName(event) for event in events | orderBy:'date'"
+            >
+              <option value="" disabled selected>
+                Selecteer een activiteit
+              </option>
+            </select>
+            <div ng-if="selected_event">
               <table class="table">
                 <thead>
                   <tr>
-                    <th scope="col">Datum</th>
-                    <th scope="col">Activiteit</th>
-                    <th scope="col" class="text-center">Inschrijvingen</th>
-                    <th ng-if="user" scope="col" class="text-center">Jij</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Naam</th>
+                    <th scope="col">E-mailadres</th>
+                    <th scope="col">Telefoonnummer</th>
+                    <th scope="col">Uitschrijven</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    ng-repeat="event in events"
-                    ng-class="{'table-info': event.signups[user.uid]}"
-                  >
-                    <td>{{event.date}}</td>
-                    <td><a href="{{event.link}}">{{event.name}}</a></td>
+                  <tr ng-repeat="(uid, bool) in selected_event.signups">
+                    <th scope="row">1</th>
+                    <td>{{users[uid].name}}</td>
+                    <td>{{users[uid].email}}</td>
+                    <td>{{users[uid].phone}}</td>
                     <td>
-                      <div class="row">
-                        <div
-                          class="col-xl-3 col-lg-4 col-md-5 col-sm-6 text-right pr-1"
-                        >
-                          <span
-                            class="badge badge"
-                            ng-class="{
-                              'badge-primary': count_event_signups(event) < event.capacity,
-                              'badge-secondary': count_event_signups(event) >= event.capacity,
-                            }"
-                            style="width: 5em; float: right; text-align: center"
-                            >{{count_event_signups(event)}}/{{event.capacity}}</span
-                          >
-                        </div>
-                        <div
-                          class="col d-none d-sm-block align-self-center pl-1"
-                        >
-                          <div class="progress">
-                            <div
-                              class="progress-bar"
-                              ng-class="{
-                                'bg-primary': count_event_signups(event) < event.capacity,
-                                'bg-secondary': count_event_signups(event) >= event.capacity,
-                              }"
-                              role="progressbar"
-                              ng-style="{width: (count_event_signups(event) / event.capacity * 100) + '%' }"
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td ng-if="user" class="text-center user-select-none">
-                      <div class="custom-control custom-switch">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customSwitch_{{event.$id}}"
-                          ng-model="event.signups[user.uid]"
-                          ng-click="set_user_event_status(user, event, $event.target.checked ? true : null)"
-                          ng-disabled="count_event_signups(event) >= event.capacity && !event.signups[user.uid]"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customSwitch_{{event.$id}}"
-                        ></label>
-                      </div>
+                      <a
+                        href=""
+                        ng-click="set_user_event_status(uid, selected_event, null)"
+                      >
+                        <svg class="bi text-danger" width="16" height="16">
+                          <use
+                            xlink:href="lib/bootstrap-icons.svg#x-square-fill"
+                          />
+                        </svg>
+                      </a>
                     </td>
                   </tr>
                 </tbody>
               </table>
+              <div class="row">
+                <div class="col">
+                  <form>
+                    <select
+                      class="custom-select"
+                      ng-model="selected_user"
+                      ng-options="user as user.name+' ('+user.email+')' for user in usersArray | orderBy:'name'"
+                    >
+                      <option value="" disabled selected>
+                        Selecteer een account
+                      </option>
+                    </select>
+                  </form>
+                </div>
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 h-100"
+                    ng-click="set_user_event_status(selected_user.$id, selected_event, true)"
+                    ng-disabled="!selected_user"
+                  >
+                    Account inschrijven
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="tab-pane" id="register" role="tabpanel">
-            <div class="card-body">
-              <div class="alert alert-info" role="alert">
-                Door het aanmaken van een account geef je ons toestemming om je
-                gegevens te bewaren tot je je account verwijderd of maximaal een
-                maand na de laatste activiteit waarvoor je was ingeschreven. We
-                gebruiken je gegevens uitsluitend voor deze inschrijvingen en om
-                zo nodig contact op te nemen in verband met COVID-19.
+        <div class="tab-pane" id="admin_new_event" role="tabpanel">
+          <div class="card-body">
+            <h5>Nieuwe activiteit</h5>
+            <form id="newEventForm" name="newEventForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Datum</label
+                >
+                <input
+                  type="datetime-local"
+                  class="col form-control"
+                  required
+                  ng-model="form.date"
+                  bind-timestamp
+                />
               </div>
-              <div class="alert alert-info" role="alert">
-                Het ingevulde e-mailadres wordt ook je inlognaam.
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Naam</label
+                >
+                <input
+                  type="text"
+                  class="col form-control"
+                  required
+                  ng-model="form.name"
+                />
               </div>
-              <form name="registerForm">
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Link</label
+                >
+                <input
+                  type="text"
+                  class="col form-control"
+                  required
+                  ng-model="form.link"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Capaciteit</label
+                >
+                <input
+                  type="number"
+                  pattern="\d*"
+                  min="1"
+                  class="col form-control"
+                  required
+                  ng-model="form.capacity"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="newEventForm"
+                  value="Activiteit aanmaken"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="newevent(form)"
+                  ng-disabled="working || newEventForm.$invalid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="admin_events" role="tabpanel">
+          <div class="card-body">
+            <h5>Activiteiten</h5>
+            <form>
+              <select
+                class="custom-select"
+                ng-model="selected_event"
+                ng-options="eventListName(event) for event in events | orderBy:'date'"
+                ng-change="edit_event = copy(selected_event)"
+              >
+                <option value="" disabled selected>
+                  Selecteer een activiteit
+                </option>
+              </select>
+            </form>
+            <div ng-if="edit_event" class="mt-3">
+              <form id="editEventForm" name="editEventForm">
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >E-mailadres</label
+                    >Datum</label
                   >
                   <input
-                    type="email"
+                    type="datetime-local"
                     class="col form-control"
                     required
-                    ng-model="form.email"
+                    ng-model="edit_event.date"
+                    bind-timestamp
                   />
                 </div>
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >Wachtwoord</label
+                    >Naam</label
                   >
                   <input
-                    type="password"
+                    type="text"
                     class="col form-control"
                     required
-                    ng-model="form.password"
+                    ng-model="edit_event.name"
                   />
                 </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Link</label
+                  >
+                  <input
+                    type="text"
+                    class="col form-control"
+                    required
+                    ng-model="edit_event.link"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Capaciteit</label
+                  >
+                  <input
+                    type="number"
+                    pattern="\d*"
+                    min="1"
+                    class="col form-control"
+                    required
+                    ng-model="edit_event.capacity"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div ng-if="edit_event" class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="editEventForm"
+                  value="Wijzigingen opslaan"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="editevent(edit_event)"
+                  ng-disabled="working || editEventForm.$invalid"
+                />
+              </div>
+              <div class="col">
+                <button
+                  type="button"
+                  class="btn btn-danger w-100 h-100"
+                  ng-click="deleteevent(selected_event)"
+                >
+                  Activiteit verwijderen
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="admin_users" role="tabpanel">
+          <div class="card-body">
+            <h5>Accounts</h5>
+            <form>
+              <select
+                class="custom-select"
+                ng-model="selected_user"
+                ng-options="user as user.name+' ('+user.email+')' for user in usersArray | orderBy:'name'"
+                ng-change="edit_user = copy(selected_user)"
+              >
+                <option value="" disabled selected>
+                  Selecteer een account
+                </option>
+              </select>
+            </form>
+            <div ng-if="selected_user" class="mt-3">
+              <form id="editAccountForm" name="editAccountForm">
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
                     >Volledige naam</label
@@ -209,7 +799,7 @@
                     type="text"
                     class="col form-control"
                     required
-                    ng-model="form.name"
+                    ng-model="edit_user.name"
                   />
                 </div>
                 <div class="row form-group">
@@ -220,215 +810,59 @@
                     type="tel"
                     class="col form-control"
                     required
-                    ng-model="form.phone"
-                  />
-                </div>
-              </form>
-              <div>{{errormsg}}</div>
-            </div>
-            <div class="card-footer">
-              <div class="row">
-                <div class="col">
-                  <button
-                    type="button"
-                    class="btn btn-primary w-100 h-100"
-                    ng-click="register(form)"
-                    ng-disabled="registerForm.$invalid"
-                  >
-                    Registreren
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tab-pane" id="login" role="tabpanel">
-            <div class="card-body">
-              <form name="loginForm">
-                <div class="row form-group">
-                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >E-mailadres</label
-                  >
-                  <input
-                    type="email"
-                    class="col form-control"
-                    required
-                    ng-model="form.email"
+                    ng-model="edit_user.phone"
                   />
                 </div>
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >Wachtwoord</label
+                    >Admin</label
                   >
                   <input
-                    type="password"
+                    type="checkbox"
                     class="col form-control"
-                    required
-                    ng-model="form.password"
+                    ng-model="edit_user.admin"
                   />
                 </div>
               </form>
-              <div>{{errormsg}}</div>
             </div>
-            <div class="card-footer">
-              <div class="row">
-                <div class="col">
-                  <button
-                    type="button"
-                    class="btn btn-primary w-100 h-100"
-                    ng-click="signin(form)"
-                    ng-disabled="loginForm.$invalid"
-                  >
-                    Inloggen
-                  </button>
-                </div>
-                <div class="col">
-                  <button
-                    type="button"
-                    class="btn btn-warning w-100 h-100"
-                    ng-click="forgotpassword(form)"
-                  >
-                    Wachtwoord vergeten?
-                  </button>
-                </div>
+          </div>
+          <div ng-if="edit_user" class="card-footer">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="submit"
+                  form="editAccountForm"
+                  value="Wijzigingen opslaan"
+                  class="btn btn-primary w-100 h-100"
+                  ng-click="edituser(edit_user)"
+                  ng-disabled="working || editAccountForm.$invalid"
+                />
               </div>
             </div>
           </div>
-
-          <div class="tab-pane" id="change_info" role="tabpanel"></div>
-
-          <div class="tab-pane" id="change_password" role="tabpanel">a</div>
-
-          <div class="tab-pane" id="delete_account" role="tabpanel">b</div>
         </div>
-      </div>
-
-      <div ng-if="userInfo.admin" class="card mt-3">
-        <div class="card-header pt-0">
-          <ul class="nav nav-tabs card-header-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <h5 class="m-2">Administratie</h5>
-            </li>
-            <li class="nav-item" role="presentation">
-              <a
-                class="nav-link align-bottom"
-                data-toggle="tab"
-                href="#admin_activities"
-                role="tab"
-                >Activiteiten</a
-              >
-            </li>
-            <li class="nav-item mr-auto" role="presentation">
-              <a
-                class="nav-link align-bottom"
-                data-toggle="tab"
-                href="#admin_users"
-                role="tab"
-                >Gebruikers</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div class="tab-content">
-          <div class="tab-pane card-body" id="admin_activities" role="tabpanel">
-            x
-          </div>
-          <div class="tab-pane card-body" id="admin_users" role="tabpanel">
-            y
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- old below -->
-
-    <div ng-switch="view">
-      <div ng-switch-when="set_info">
-        <div>Het ingevulde e-mailadres wordt ook je nieuwe inlognaam.</div>
-        <form name="setInfoForm">
-          <label>
-            E-mailadres:
-            <input type="email" required ng-model="form.email" />
-          </label>
-          <br />
-          <label>
-            Volledige naam:
-            <input type="text" required ng-model="form.name" />
-          </label>
-          <br />
-          <label>
-            Telefoonnummer:
-            <input type="tel" required ng-model="form.phone" />
-          </label>
-          <br />
-          <label>
-            Huidig wachtwoord:
-            <input type="password" required ng-model="form.password" />
-          </label>
-          <br />
-        </form>
-        <button ng-click="setView('main')">Annuleren</button>
-        <button ng-click="setinfo(form)" ng-disabled="setInfoForm.$invalid">
-          Wijzigen
-        </button>
-        <div>{{errormsg}}</div>
-      </div>
-
-      <div ng-switch-when="set_password">
-        <form name="setPasswordForm">
-          <label>
-            Huidig wachtwoord:
-            <input type="password" required ng-model="form.password.old" />
-          </label>
-          <br />
-          <label>
-            Nieuw wachtwoord:
-            <input type="password" required ng-model="form.password.new" />
-          </label>
-          <br />
-        </form>
-        <button ng-click="setView('main')">Annuleren</button>
-        <button
-          ng-click="setpassword(form)"
-          ng-disabled="setPasswordForm.$invalid"
-        >
-          Wijzigen
-        </button>
-        <div>{{errormsg}}</div>
-      </div>
-
-      <div ng-switch-when="delete_account">
-        <form name="deleteAccountForm">
-          <label>
-            Huidig wachtwoord:
-            <input type="password" required ng-model="form.password" />
-          </label>
-          <br />
-        </form>
-        <button ng-click="setView('main')">Annuleren</button>
-        <button
-          ng-click="deleteaccount(form)"
-          ng-disabled="deleteAccountForm.$invalid"
-        >
-          Account verwijderen
-        </button>
-        <div>{{errormsg}}</div>
       </div>
     </div>
 
     <div
       class="toast"
-      style="position: absolute; bottom: 0; right: 0"
+      style="
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        top: 0;
+      "
       role="alert"
       data-delay="5000"
     >
       <div class="toast-header">
-        <strong class="mr-auto">Waarschuwing</strong>
+        <strong class="mr-auto text-left">{{toast_text}}</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="toast-body">{{toast_text}}</div>
     </div>
   </body>
 </html>
