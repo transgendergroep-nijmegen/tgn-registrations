@@ -17,6 +17,7 @@ angular
       $firebaseArray
     ) => {
       $scope.authObj = $firebaseAuth();
+      $scope.admins = $firebaseObject(firebase.database().ref("admins"));
       $scope.events = $firebaseArray(firebase.database().ref("events"));
       $scope.users = $firebaseObject(firebase.database().ref("users"));
       $scope.usersArray = $firebaseArray(firebase.database().ref("users"));
@@ -89,6 +90,7 @@ angular
       $scope.show_toast = (text) => {
         $scope.toast_text = text;
         $(".toast").toast("show");
+        $scope.working = false;
       };
 
       $scope.signin = (form) => {

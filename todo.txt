@@ -1,7 +1,3 @@
-- email-verificatie vereist maken voor inschrijven:
-    - https://firebase.google.com/docs/reference/security/database/#authtoken
-- security regels
-    - https://firebase.google.com/docs/reference/security/database#-_negate_or_subtract
 - cronjobs (daily) / admin jobs
     - delete past activities (older than a month)
     - delete deleted accounts without past activities
