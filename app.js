@@ -19,6 +19,8 @@ angular
       $scope.authObj = $firebaseAuth();
       $scope.admins = $firebaseObject(firebase.database().ref("admins"));
       $scope.events = $firebaseArray(firebase.database().ref("events"));
+
+      // Get admin data.
       $scope.users = $firebaseObject(firebase.database().ref("users"));
       $scope.usersArray = $firebaseArray(firebase.database().ref("users"));
 
@@ -231,6 +233,11 @@ angular
       };
 
       $scope.edituser = (user) => {
+        if (user.admin !== null) {
+          $scope.admins[user.$id] = user.admin;
+          $scope.admins.$save(user.$id);
+          user.admin = null;
+        }
         let index = $scope.usersArray.$indexFor(user.$id);
         $scope.usersArray[index] = user;
         $scope.usersArray
@@ -241,16 +248,25 @@ angular
           .catch($scope.show_toast);
       };
 
-      $scope.deleteaccount = (user) => {
-        let index = $scope.users.$indexFor(user.$id);
-        $scope.users
-          .$remove(index)
-          .then(() => {
-            let date_text = $filter("date")(event.date * 1000, "dd/MM/yyyy");
-            $scope.show_toast(
-              `Activiteit '${event.name}' op ${date_text} is verwijderd.`
-            );
-            $scope.edit_event = null;
+      $scope.deleteaccount = (form) => {
+        $scope.working = true;
+        $scope.authObj
+          .$signInWithEmailAndPassword($scope.user.email, form.password)
+          .then((user) => {
+            let index = $scope.usersArray.$indexFor(user.uid);
+            $scope.usersArray
+              .$remove(index)
+              .then(() => {
+                $scope.authObj
+                  .$deleteUser()
+                  .then(() => {
+                    $scope.show_toast(`Account '${user.email}' is verwijderd.`);
+                    $scope.showTab("events");
+                    $scope.working = false;
+                  })
+                  .catch($scope.show_toast);
+              })
+              .catch($scope.show_toast);
           })
           .catch($scope.show_toast);
       };
