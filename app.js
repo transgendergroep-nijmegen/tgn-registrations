@@ -20,10 +20,6 @@ angular
       $scope.admins = $firebaseObject(firebase.database().ref("admins"));
       $scope.events = $firebaseArray(firebase.database().ref("events"));
 
-      // Get admin data.
-      $scope.users = $firebaseObject(firebase.database().ref("users"));
-      $scope.usersArray = $firebaseArray(firebase.database().ref("users"));
-
       $interval(() => {
         $scope.now = Date.now();
       }, 1000);
@@ -47,8 +43,21 @@ angular
               }
             });
           }, 1000);
+
+          $scope.updateAdminData();
         }
       });
+
+      $scope.updateAdminData = () => {
+        if ($scope.admins[$scope.user?.uid] && !$scope.users) {
+          $scope.users = $firebaseObject(firebase.database().ref("users"));
+          $scope.usersArray = $firebaseArray(firebase.database().ref("users"));
+        } else {
+          $scope.users = $scope.usersArray = null;
+        }
+      };
+
+      $scope.admins.$watch($scope.updateAdminData);
 
       $scope.register = (form) => {
         $scope.working = true;
@@ -164,7 +173,7 @@ angular
 
       $scope.set_user_event_status = (uid, event, status) => {
         $scope.working = true;
-        let date_text = $filter("date")(event.date * 1000, "dd/MM/yyyy");
+        let date_text = $filter("date")(event.date, "dd/MM/yyyy");
         let you_are = uid === $scope.user.uid ? "Je bent" : "De account is";
         if (status)
           $scope.show_toast(
@@ -190,7 +199,7 @@ angular
         $scope.events
           .$add(event)
           .then(() => {
-            let date_text = $filter("date")(event.date * 1000, "dd/MM/yyyy");
+            let date_text = $filter("date")(event.date, "dd/MM/yyyy");
             $scope.show_toast(
               `Activiteit '${event.name}' op ${date_text} is aangemaakt.`
             );
@@ -207,7 +216,7 @@ angular
         $scope.events
           .$save(index)
           .then(() => {
-            let date_text = $filter("date")(event.date * 1000, "dd/MM/yyyy");
+            let date_text = $filter("date")(event.date, "dd/MM/yyyy");
             $scope.show_toast(
               `Activiteit '${event.name}' op ${date_text} is gewijzigd.`
             );
@@ -222,7 +231,7 @@ angular
         $scope.events
           .$remove(index)
           .then(() => {
-            let date_text = $filter("date")(event.date * 1000, "dd/MM/yyyy");
+            let date_text = $filter("date")(event.date, "dd/MM/yyyy");
             $scope.show_toast(
               `Activiteit '${event.name}' op ${date_text} is verwijderd.`
             );
@@ -283,7 +292,7 @@ angular
         (event.fake_signups ?? 0) + Object.keys(event.signups ?? []).length;
 
       $scope.eventListName = (event) =>
-        `${$filter("date")(event.date * 1000, "dd/MM/yyyy")} - ${event.name}`;
+        `${$filter("date")(event.date, "dd/MM/yyyy")} - ${event.name}`;
 
       $scope.copy = (obj) => Object.assign({}, obj);
     }
@@ -295,11 +304,11 @@ angular
       link: function (scope, element, attrs, ngModel) {
         if (ngModel) {
           ngModel.$parsers.push(function (value) {
-            return Math.floor(new Date(value).getTime() / 1000);
+            return new Date(value).getTime();
           });
 
           ngModel.$formatters.push(function (value) {
-            return new Date(value * 1000);
+            return new Date(value);
           });
         }
       },
