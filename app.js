@@ -122,13 +122,14 @@ angular
 
       $scope.setinfo = (form) => {
         $scope.working = true;
+        let newEmail = $scope.user.email != form.email;
         $scope.authObj
           .$signInWithEmailAndPassword($scope.user.email, form.password)
           .then((user) => {
             $scope.authObj
               .$updateEmail(form.email)
               .then(() => {
-                user.sendEmailVerification();
+                if (newEmail) user.sendEmailVerification();
                 $scope.setUserInfo($scope.user, {
                   email: form.email,
                   name: form.name,
