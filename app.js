@@ -34,16 +34,6 @@ angular
               $scope.userInfo = data;
             });
 
-          // Start email verification check routine.
-          let emailVerificationInterval = $interval(() => {
-            $scope.user?.reload().then(() => {
-              if ($scope.user?.emailVerified) {
-                $scope.$apply();
-                $interval.cancel(emailVerificationInterval);
-              }
-            });
-          }, 1000);
-
           $scope.updateAdminData();
         }
       });
@@ -109,6 +99,7 @@ angular
         $scope.authObj
           .$signInWithEmailAndPassword(form.email, form.password)
           .then((user) => {
+            $scope.show_toast("Succesvol ingelogd.");
             $scope.showTab("events");
             $scope.working = false;
           })
@@ -117,6 +108,7 @@ angular
 
       $scope.signout = () => {
         $scope.authObj.$signOut();
+        $scope.show_toast("Succesvol uitgelogd.");
         $scope.showTab("events");
       };
 
@@ -136,6 +128,7 @@ angular
                   phone: form.phone,
                 });
                 $scope.showTab("events");
+                $scope.show_toast("Gegevens succesvol aangepast.");
                 $scope.working = false;
               })
               .catch($scope.show_toast);
@@ -150,6 +143,7 @@ angular
           .ref(`users/${user.uid}`)
           .set(userInfo)
           .then(() => {
+            $scope.show_toast("Gegevens succesvol aangepast.");
             $scope.userInfo = userInfo;
             $scope.working = false;
           })
@@ -164,6 +158,7 @@ angular
             $scope.authObj
               .$updatePassword(form.password.new)
               .then(() => {
+                $scope.show_toast("Wachtwoord succesvol aangepast.");
                 $scope.showTab("events");
                 $scope.working = false;
               })
@@ -174,21 +169,21 @@ angular
 
       $scope.set_user_event_status = (uid, event, status) => {
         $scope.working = true;
-        let date_text = $filter("date")(event.date, "dd/MM/yyyy");
-        let you_are = uid === $scope.user.uid ? "Je bent" : "De account is";
-        if (status)
-          $scope.show_toast(
-            `${you_are} nu ingeschreven voor '${event.name}' op ${date_text}.`
-          );
-        else
-          $scope.show_toast(
-            `${you_are} nu uitgeschreven voor '${event.name}' op ${date_text}.`
-          );
         firebase
           .database()
           .ref(`events/${event.$id}/signups/${uid}`)
           .set(status)
           .then(() => {
+            let date_text = $filter("date")(event.date, "dd/MM/yyyy");
+            let you_are = uid === $scope.user.uid ? "Je bent" : "De account is";
+            if (status)
+              $scope.show_toast(
+                `${you_are} nu ingeschreven voor '${event.name}' op ${date_text}.`
+              );
+            else
+              $scope.show_toast(
+                `${you_are} nu uitgeschreven voor '${event.name}' op ${date_text}.`
+              );
             $scope.working = false;
             $scope.$apply();
           })
@@ -263,20 +258,18 @@ angular
         $scope.authObj
           .$signInWithEmailAndPassword($scope.user.email, form.password)
           .then((user) => {
-            let index = $scope.usersArray.$indexFor(user.uid);
-            $scope.usersArray
-              .$remove(index)
-              .then(() => {
-                $scope.authObj
-                  .$deleteUser()
-                  .then(() => {
-                    $scope.show_toast(`Account '${user.email}' is verwijderd.`);
-                    $scope.showTab("events");
-                    $scope.working = false;
-                  })
-                  .catch($scope.show_toast);
-              })
-              .catch($scope.show_toast);
+            $scope.events.forEach((event) => {
+              if (event.date > $scope.now)
+                $scope.set_user_event_status($scope.user.uid, event, null);
+              $scope.authObj
+                .$deleteUser()
+                .then(() => {
+                  $scope.show_toast(`Account '${user.email}' is verwijderd.`);
+                  $scope.showTab("events");
+                  $scope.working = false;
+                })
+                .catch($scope.show_toast);
+            });
           })
           .catch($scope.show_toast);
       };

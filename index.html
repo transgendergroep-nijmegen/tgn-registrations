@@ -163,7 +163,15 @@
               role="alert"
             >
               Volg de instructies in de bevestigings-e-mail om de
-              accountregistratie af te ronden.
+              accountregistratie af te ronden en <b>log daarna opnieuw in</b>.
+            </div>
+
+            <div
+              ng-if="user && user.emailVerified"
+              class="alert alert-info"
+              role="alert"
+            >
+              Ingelogd als <b>{{userInfo.name}}</b>.
             </div>
 
             <table class="table">
