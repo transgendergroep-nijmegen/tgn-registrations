@@ -222,19 +222,25 @@ angular
       };
 
       $scope.deleteevent = (event) => {
-        $scope.working = true;
-        let index = $scope.events.$indexFor(event.$id);
-        $scope.events
-          .$remove(index)
-          .then(() => {
-            let date_text = $filter("date")(event.date, "dd/MM/yyyy");
-            $scope.show_toast(
-              `Activiteit '${event.name}' op ${date_text} is verwijderd.`
-            );
-            $scope.edit_event = null;
-            $scope.working = false;
-          })
-          .catch($scope.show_toast);
+        let date_text = $filter("date")(event.date, "dd/MM/yyyy");
+        if (
+          confirm(
+            `Weet je zeker dat je de de activiteit ${event.name} op ${date_text} wilt verwijderen?`
+          )
+        ) {
+          $scope.working = true;
+          let index = $scope.events.$indexFor(event.$id);
+          $scope.events
+            .$remove(index)
+            .then(() => {
+              $scope.show_toast(
+                `Activiteit '${event.name}' op ${date_text} is verwijderd.`
+              );
+              $scope.edit_event = null;
+              $scope.working = false;
+            })
+            .catch($scope.show_toast);
+        }
       };
 
       $scope.edituser = (user) => {
@@ -255,23 +261,29 @@ angular
 
       $scope.deleteaccount = (form) => {
         $scope.working = true;
-        $scope.authObj
-          .$signInWithEmailAndPassword($scope.user.email, form.password)
-          .then((user) => {
-            $scope.events.forEach((event) => {
-              if (event.date > $scope.now)
-                $scope.set_user_event_status($scope.user.uid, event, null);
-              $scope.authObj
-                .$deleteUser()
-                .then(() => {
-                  $scope.show_toast(`Account '${user.email}' is verwijderd.`);
-                  $scope.showTab("events");
-                  $scope.working = false;
-                })
-                .catch($scope.show_toast);
-            });
-          })
-          .catch($scope.show_toast);
+        if (
+          confirm(
+            `Weet je zeker dat je de account van ${scope.user.email} wilt verwijderen?`
+          )
+        ) {
+          $scope.authObj
+            .$signInWithEmailAndPassword($scope.user.email, form.password)
+            .then((user) => {
+              $scope.events.forEach((event) => {
+                if (event.date > $scope.now)
+                  $scope.set_user_event_status($scope.user.uid, event, null);
+                $scope.authObj
+                  .$deleteUser()
+                  .then(() => {
+                    $scope.show_toast(`Account '${user.email}' is verwijderd.`);
+                    $scope.showTab("events");
+                    $scope.working = false;
+                  })
+                  .catch($scope.show_toast);
+              });
+            })
+            .catch($scope.show_toast);
+        }
       };
 
       $scope.showTab = (tab) => {
