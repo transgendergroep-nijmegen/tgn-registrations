@@ -200,7 +200,10 @@
                     <a href="{{event.link}}" target="_blank">{{event.name}}</a>
                   </td>
                   <td>
-                    <div class="row">
+                    <div ng-if="event.no_registrations">
+                      Inschrijven niet nodig.
+                    </div>
+                    <div ng-if="!event.no_registrations" class="row">
                       <div class="col-auto pr-1">
                         <span
                           class="badge badge"
@@ -222,7 +225,10 @@
                     </div>
                   </td>
                   <td ng-if="user.emailVerified" class="user-select-none ml-2">
-                    <div class="custom-control custom-switch">
+                    <div
+                      ng-if="!event.no_registrations"
+                      class="custom-control custom-switch"
+                    >
                       <input
                         type="checkbox"
                         class="custom-control-input"
@@ -309,7 +315,7 @@
               </div>
               <div class="row form-group">
                 <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                  >Volledige naam</label
+                  >Naam</label
                 >
                 <input
                   type="text"
@@ -419,7 +425,7 @@
               </div>
               <div class="row form-group">
                 <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                  >Volledige naam</label
+                  >Naam</label
                 >
                 <input
                   type="text"
@@ -670,8 +676,17 @@
                   pattern="\d*"
                   min="1"
                   class="col form-control"
-                  required
                   ng-model="form.capacity"
+                />
+              </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Geen inschrijvingen</label
+                >
+                <input
+                  type="checkbox"
+                  class="col form-control"
+                  ng-model="form.no_registrations"
                 />
               </div>
             </form>
@@ -752,8 +767,17 @@
                     pattern="\d*"
                     min="1"
                     class="col form-control"
-                    required
                     ng-model="edit_event.capacity"
+                  />
+                </div>
+                <div class="row form-group">
+                  <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                    >Geen registraties</label
+                  >
+                  <input
+                    type="checkbox"
+                    class="col form-control"
+                    ng-model="edit_event.no_registrations"
                   />
                 </div>
               </form>
@@ -803,7 +827,7 @@
               <form id="editAccountForm" name="editAccountForm">
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >Volledige naam</label
+                    >Naam</label
                   >
                   <input
                     type="text"
