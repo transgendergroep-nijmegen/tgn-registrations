@@ -560,16 +560,33 @@
         <div class="tab-pane" id="admin_signups" role="tabpanel">
           <div class="card-body">
             <h5>Inschrijvingen</h5>
-            <select
-              class="custom-select"
-              ng-model="selected_event"
-              ng-options="eventListName(event) for event in events | orderBy:'date'"
-            >
-              <option value="" disabled selected>
-                Selecteer een activiteit
-              </option>
-            </select>
+            <div class="row">
+              <select
+                class="col custom-select"
+                ng-model="selected_event"
+                ng-options="eventListName(event) for event in events | orderBy:'date'"
+                ng-change="selected_user = null"
+              >
+                <option value="" disabled selected>
+                  Selecteer een activiteit
+                </option>
+              </select>
+              <div class="col-auto my-auto">
+                <span>of</span>
+              </div>
+              <select
+                class="col custom-select"
+                ng-model="selected_user"
+                ng-options="user as user.name+' ('+user.email+')' for user in usersArray | orderBy:'name'"
+                ng-change="selected_event = null"
+              >
+                <option value="" disabled selected>
+                  Selecteer een account
+                </option>
+              </select>
+            </div>
             <div ng-if="selected_event">
+              <h6>Activiteit: {{eventListName(selected_event)}}</h6>
               <table class="table">
                 <thead>
                   <tr>
@@ -622,7 +639,67 @@
                     ng-click="set_user_event_status(selected_user.$id, selected_event, true)"
                     ng-disabled="!selected_user"
                   >
-                    Account inschrijven
+                    Inschrijven
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div ng-if="selected_user">
+              <h6>
+                Account: {{selected_user.name+' ('+selected_user.email+')'}}
+              </h6>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Activiteit</th>
+                    <th scope="col">Uitschrijven</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    ng-repeat="event in events | orderBy:'date'"
+                    ng-if="event.signups[selected_user.$id]"
+                  >
+                    <td>{{event.date | date:"dd/MM/yyyy"}}</td>
+                    <td>{{event.name}}</td>
+                    <td>
+                      <a
+                        href=""
+                        ng-click="set_user_event_status(selected_user.$id, event, null)"
+                      >
+                        <svg class="bi text-danger" width="16" height="16">
+                          <use
+                            xlink:href="lib/bootstrap-icons.svg#x-square-fill"
+                          />
+                        </svg>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row">
+                <div class="col">
+                  <form>
+                    <select
+                      class="custom-select"
+                      ng-model="selected_event"
+                      ng-options="eventListName(event) for event in events | orderBy:'date'"
+                    >
+                      <option value="" disabled selected>
+                        Selecteer een activiteit
+                      </option>
+                    </select>
+                  </form>
+                </div>
+                <div class="col">
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100 h-100"
+                    ng-click="set_user_event_status(selected_user.$id, selected_event, true)"
+                    ng-disabled="!selected_event"
+                  >
+                    Inschrijven
                   </button>
                 </div>
               </div>
