@@ -2,17 +2,9 @@
 <html ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
   <head>
     <title>Transgendergroep Nijmegen Registraties</title>
-    <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="lib/bootstrap.css" />
     <link rel="stylesheet" href="lib/bootstrap-toggle.css" />
     <!-- <link rel="stylesheet" href="style.css" /> -->
-    <script src="lib/angular.js"></script>
-    <script src="lib/firebase.js"></script>
-    <script src="lib/angularfire.js"></script>
-    <script src="lib/jquery.js"></script>
-    <script src="lib/bootstrap.bundle.js"></script>
-    <script src="lib/bootstrap-toggle.js"></script>
-    <script src="app.js"></script>
     <link
       rel="icon"
       href="http://www.transgendernijmegen.nl/wp-content/uploads/2018/11/transgender-groep-nijmegen-60x60.png"
@@ -27,6 +19,13 @@
       rel="apple-touch-icon"
       href="http://www.transgendernijmegen.nl/wp-content/uploads/2018/11/transgender-groep-nijmegen-180x180.png"
     />
+    <script src="lib/angular.js"></script>
+    <script src="lib/firebase.js"></script>
+    <script src="lib/angularfire.js"></script>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/bootstrap.bundle.js"></script>
+    <script src="lib/bootstrap-toggle.js"></script>
+    <script src="app.js"></script>
   </head>
 
   <body class="text-justify">
@@ -201,7 +200,7 @@
                 <tr>
                   <th scope="col">Datum</th>
                   <th scope="col">Activiteit</th>
-                  <th scope="col" style="width: 100%">Inschrijvingen</th>
+                  <th scope="col w-100">Inschrijvingen</th>
                   <th
                     ng-if="user.emailVerified"
                     scope="col"
@@ -1005,7 +1004,7 @@
       <div class="toast-header">
         <strong class="mr-auto text-left">{{toast_text}}</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-          <span aria-hidden="true">&times;</span>
+          <span style="pointer-events: auto">&times;</span>
         </button>
       </div>
     </div>
