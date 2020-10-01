@@ -200,7 +200,7 @@
                 <tr>
                   <th scope="col">Datum</th>
                   <th scope="col">Activiteit</th>
-                  <th scope="col w-100">Inschrijvingen</th>
+                  <th scope="col">Inschrijvingen</th>
                   <th
                     ng-if="user.emailVerified"
                     scope="col"
@@ -248,7 +248,7 @@
                   <td ng-if="user.emailVerified" class="user-select-none ml-2">
                     <div
                       ng-if="!event.no_registrations"
-                      class="custom-control custom-switch"
+                      class="custom-control custom-switch d-flex justify-content-center"
                     >
                       <input
                         type="checkbox"
