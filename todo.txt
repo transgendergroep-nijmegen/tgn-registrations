@@ -1,5 +1,5 @@
 - cronjobs (daily) / admin jobs
     - delete past activities (older than a month)
     - delete deleted accounts without past activities
-- code verbeteren? (naming, promise chaining)
+- code verbeteren? (naming, promise chaining, reduce html element duplication (e.g. forms))
 - terug naar hosten op github? (om alle firebase sources op één plek te houden)

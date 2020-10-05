@@ -194,79 +194,85 @@
             >
               Ingelogd als <b>{{userInfo.name}}</b>.
             </div>
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Datum</th>
-                  <th scope="col">Activiteit</th>
-                  <th scope="col">Inschrijvingen</th>
-                  <th
-                    ng-if="user.emailVerified"
-                    scope="col"
-                    class="text-center"
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Activiteit</th>
+                    <th scope="col">Inschrijvingen</th>
+                    <th
+                      ng-if="user.emailVerified"
+                      scope="col"
+                      class="text-center"
+                    >
+                      Jij
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    ng-repeat="event in events | orderBy:'date'"
+                    ng-if="event.date > now && !event.invisible"
+                    ng-class="{'table-info': event.signups[user.uid]}"
                   >
-                    Jij
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  ng-repeat="event in events | orderBy:'date'"
-                  ng-if="event.date > now && !event.invisible"
-                  ng-class="{'table-info': event.signups[user.uid]}"
-                >
-                  <td>{{event.date | date:"dd/MM/yyyy"}}</td>
-                  <td>
-                    <a href="{{event.link}}" target="_blank">{{event.name}}</a>
-                  </td>
-                  <td>
-                    <div ng-if="event.no_registrations">
-                      Inschrijven niet nodig.
-                    </div>
-                    <div ng-if="!event.no_registrations" class="row">
-                      <div class="col-auto pr-1">
-                        <span
-                          class="badge badge"
-                          ng-class="count_event_signups(event) < event.capacity ? 'badge-primary' : 'badge-secondary'"
-                          style="width: 5em; float: right; text-align: center"
-                          >{{count_event_signups(event)}}/{{event.capacity}}</span
-                        >
+                    <td>{{event.date | date:"dd/MM/yyyy"}}</td>
+                    <td>
+                      <a href="{{event.link}}" target="_blank"
+                        >{{event.name}}</a
+                      >
+                    </td>
+                    <td>
+                      <div ng-if="event.no_registrations">
+                        Inschrijven niet nodig.
                       </div>
-                      <div class="col pl-1">
-                        <div class="progress">
-                          <div
-                            class="progress-bar"
-                            ng-class="count_event_signups(event) < event.capacity ? 'bg-primary' : 'bg-secondary'"
-                            role="progressbar"
-                            ng-style="{width: (count_event_signups(event) / event.capacity * 100) + '%' }"
-                          ></div>
+                      <div ng-if="!event.no_registrations" class="row">
+                        <div class="col-auto pr-1">
+                          <span
+                            class="badge badge"
+                            ng-class="count_event_signups(event) < event.capacity ? 'badge-primary' : 'badge-secondary'"
+                            style="width: 5em; float: right; text-align: center"
+                            >{{count_event_signups(event)}}/{{event.capacity}}</span
+                          >
+                        </div>
+                        <div class="col pl-1">
+                          <div class="progress">
+                            <div
+                              class="progress-bar"
+                              ng-class="count_event_signups(event) < event.capacity ? 'bg-primary' : 'bg-secondary'"
+                              role="progressbar"
+                              ng-style="{width: (count_event_signups(event) / event.capacity * 100) + '%' }"
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td ng-if="user.emailVerified" class="user-select-none ml-2">
-                    <div
-                      ng-if="!event.no_registrations"
-                      class="custom-control custom-switch d-flex justify-content-center"
+                    </td>
+                    <td
+                      ng-if="user.emailVerified"
+                      class="user-select-none ml-2"
                     >
-                      <input
-                        type="checkbox"
-                        class="custom-control-input"
-                        id="customSwitch_{{event.$id}}"
-                        ng-model="event.signups[user.uid]"
-                        ng-click="set_user_event_status(user.uid, event, $event.target.checked ? true : null)"
-                        ng-disabled="count_event_signups(event) >= event.capacity && !event.signups[user.uid]"
-                      />
-                      <label
-                        class="custom-control-label"
-                        for="customSwitch_{{event.$id}}"
-                      ></label>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                      <div
+                        ng-if="!event.no_registrations"
+                        class="custom-control custom-switch d-flex justify-content-center"
+                      >
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="customSwitch_{{event.$id}}"
+                          ng-model="event.signups[user.uid]"
+                          ng-click="set_user_event_status(user.uid, event, $event.target.checked ? true : null)"
+                          ng-disabled="count_event_signups(event) >= event.capacity && !event.signups[user.uid]"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="customSwitch_{{event.$id}}"
+                        ></label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
