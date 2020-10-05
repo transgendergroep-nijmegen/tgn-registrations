@@ -36,12 +36,12 @@
       algemene informatie.
     </div>
 
-    <div class="card m-3">
+    <div class="card">
       <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" role="tablist">
           <li class="nav-item" role="presentation">
             <a
-              class="nav-link active"
+              class="nav-link px-1 active"
               data-toggle="tab"
               href="#events"
               role="tab"
@@ -51,7 +51,7 @@
           </li>
           <li ng-if="!user" class="nav-item" role="presentation">
             <a
-              class="nav-link"
+              class="nav-link px-1"
               data-toggle="tab"
               href="#register"
               ng-click="assign('form', {})"
@@ -62,7 +62,7 @@
           </li>
           <li ng-if="!user" class="nav-item" role="presentation">
             <a
-              class="nav-link"
+              class="nav-link px-1"
               data-toggle="tab"
               href="#login"
               ng-click="assign('form', {})"
@@ -73,7 +73,7 @@
           </li>
           <li ng-if="user" class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link px-1 dropdown-toggle"
               data-toggle="dropdown"
               href="#"
               role="button"
@@ -109,7 +109,7 @@
           </li>
           <li ng-if="admins[user.uid]" class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link px-1 dropdown-toggle"
               data-toggle="dropdown"
               href="#"
               role="button"
@@ -153,7 +153,7 @@
           </li>
           <li ng-if="user" class="nav-item" role="presentation">
             <a
-              class="nav-link align-bottom"
+              class="nav-link px-1 align-bottom"
               href=""
               ng-click="signout()"
               role="tab"
@@ -171,7 +171,7 @@
 
       <div class="tab-content">
         <div class="tab-pane active" id="events" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <div ng-if="!user" class="alert alert-info" role="alert">
               Registreer een account of log in om je in te kunnen schrijven voor
               activiteiten.
