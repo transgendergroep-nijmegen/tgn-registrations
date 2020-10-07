@@ -319,7 +319,7 @@
             <div class="alert alert-info" role="alert">
               Het ingevulde e-mailadres wordt ook je inlognaam.
             </div>
-            <form id="registerForm" name="registerForm">
+            <form class="m-1" id="registerForm" name="registerForm">
               <div class="row form-group">
                 <label class="col col-form-label">E-mailadres</label>
                 <div class="col">
@@ -384,7 +384,7 @@
 
         <div class="tab-pane" id="login" role="tabpanel">
           <div class="card-body p-0">
-            <form id="loginForm" name="loginForm">
+            <form class="m-1" id="loginForm" name="loginForm">
               <div class="row form-group">
                 <label class="col col-form-label">E-mailadres</label>
                 <div class="col">
@@ -436,11 +436,11 @@
 
         <div class="tab-pane" id="change_info" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Gegevens wijzigen</h5>
+            <h5 class="m-1">Gegevens wijzigen</h5>
             <div class="alert alert-info" role="alert">
               Het ingevulde e-mailadres wordt ook je inlognaam.
             </div>
-            <form id="setInfoForm" name="setInfoForm">
+            <form class="m-1" id="setInfoForm" name="setInfoForm">
               <div class="row form-group">
                 <label class="col col-form-label">E-mailadres</label>
                 <div class="col">
@@ -505,8 +505,8 @@
 
         <div class="tab-pane" id="change_password" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Wachtwoord wijzigen</h5>
-            <form id="setPasswordForm" name="setPasswordForm">
+            <h5 class="m-1">Wachtwoord wijzigen</h5>
+            <form class="m-1" id="setPasswordForm" name="setPasswordForm">
               <div class="row form-group">
                 <label class="col col-form-label">Huidig wachtwoord</label>
                 <div class="col">
@@ -549,13 +549,13 @@
 
         <div class="tab-pane" id="delete_account" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Account verwijderen</h5>
+            <h5 class="m-1">Account verwijderen</h5>
             <div class="alert alert-danger" role="alert">
               Weet je zeker dat je je account wilt verwijderen? Dit kan niet
               ongedaan worden gemaakt. Eventuele inschrijvingen voor
               activiteiten worden verwijderd.
             </div>
-            <form id="deleteAccountForm" name="deleteAccountForm">
+            <form class="m-1" id="deleteAccountForm" name="deleteAccountForm">
               <div class="row form-group">
                 <label class="col col-form-label">Wachtwoord</label>
                 <div class="col">
@@ -587,7 +587,7 @@
 
         <div class="tab-pane" id="admin_signups" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Inschrijvingen</h5>
+            <h5 class="m-1">Inschrijvingen</h5>
             <div class="row">
               <select
                 class="col custom-select"
@@ -659,7 +659,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <form>
+                  <form class="m-1">
                     <select
                       class="custom-select"
                       ng-model="selected_user"
@@ -730,7 +730,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <form>
+                  <form class="m-1">
                     <select
                       class="custom-select"
                       ng-model="selected_event"
@@ -759,8 +759,8 @@
 
         <div class="tab-pane" id="admin_new_event" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Nieuwe activiteit</h5>
-            <form id="newEventForm" name="newEventForm">
+            <h5 class="m-1">Nieuwe activiteit</h5>
+            <form class="m-1" id="newEventForm" name="newEventForm">
               <div class="row form-group">
                 <label class="col col-form-label">Datum</label>
                 <div class="col">
@@ -847,8 +847,8 @@
 
         <div class="tab-pane" id="admin_events" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Activiteiten</h5>
-            <form>
+            <h5 class="m-1">Activiteiten</h5>
+            <form class="m-1">
               <select
                 class="custom-select"
                 ng-model="selected_event"
@@ -861,7 +861,7 @@
               </select>
             </form>
             <div ng-if="edit_event" class="mt-3">
-              <form id="editEventForm" name="editEventForm">
+              <form class="m-1" id="editEventForm" name="editEventForm">
                 <div class="row form-group">
                   <label class="col col-form-label">Datum</label>
                   <div class="col">
@@ -958,8 +958,8 @@
 
         <div class="tab-pane" id="admin_users" role="tabpanel">
           <div class="card-body p-0">
-            <h5>Accounts</h5>
-            <form>
+            <h5 class="m-1">Accounts</h5>
+            <form class="m-1">
               <select
                 class="custom-select"
                 ng-model="selected_user"
@@ -972,7 +972,7 @@
               </select>
             </form>
             <div ng-if="selected_user" class="mt-3">
-              <form id="editAccountForm" name="editAccountForm">
+              <form class="m-1" id="editAccountForm" name="editAccountForm">
                 <div class="row form-group">
                   <label class="col col-form-label">Naam</label>
                   <div class="col">
