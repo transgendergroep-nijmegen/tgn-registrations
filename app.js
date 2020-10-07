@@ -39,7 +39,7 @@ angular
       });
 
       $scope.updateAdminData = () => {
-        if ($scope.admins[$scope.user?.uid] && !$scope.users) {
+        if ($scope.user && $scope.admins[$scope.user.uid] && !$scope.users) {
           $scope.users = $firebaseObject(firebase.database().ref("users"));
           $scope.usersArray = $firebaseArray(firebase.database().ref("users"));
         } else {
