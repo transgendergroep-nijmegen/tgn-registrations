@@ -19,6 +19,11 @@
       rel="apple-touch-icon"
       href="http://www.transgendernijmegen.nl/wp-content/uploads/2018/11/transgender-groep-nijmegen-180x180.png"
     />
+    <style>
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+      }
+    </style>
     <script src="lib/angular.js"></script>
     <script src="lib/firebase.js"></script>
     <script src="lib/angularfire.js"></script>
@@ -28,7 +33,7 @@
     <script src="app.js"></script>
   </head>
 
-  <body class="text-justify">
+  <body ng-cloak class="text-justify">
     <!-- <div class="alert alert-info text-center" role="alert">
       Op deze pagina kun je je inschrijven voor de activiteiten van de
       Transgendergroep Nijmegen. Bezoek
