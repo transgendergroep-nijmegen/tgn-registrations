@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-cloak ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
+<html ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
   <head>
     <title>Transgendergroep Nijmegen Inschrijvingen</title>
     <link rel="stylesheet" href="lib/bootstrap.css" />
@@ -24,16 +24,9 @@
         display: none !important;
       }
     </style>
-    <script src="lib/angular.js"></script>
-    <script src="lib/firebase.js"></script>
-    <script src="lib/angularfire.js"></script>
-    <script src="lib/jquery.js"></script>
-    <script src="lib/bootstrap.bundle.js"></script>
-    <script src="lib/bootstrap-toggle.js"></script>
-    <script src="app.js"></script>
   </head>
 
-  <body class="text-justify">
+  <body ng-cloak class="text-justify">
     <!-- <div class="alert alert-info text-center" role="alert">
       Op deze pagina kun je je inschrijven voor de activiteiten van de
       Transgendergroep Nijmegen. Bezoek
@@ -1055,5 +1048,12 @@
         </button>
       </div>
     </div>
+    <script src="lib/angular.js"></script>
+    <script src="lib/firebase.js"></script>
+    <script src="lib/angularfire.js"></script>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/bootstrap.bundle.js"></script>
+    <script src="lib/bootstrap-toggle.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
