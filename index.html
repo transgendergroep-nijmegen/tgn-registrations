@@ -29,11 +29,19 @@
   </head>
 
   <body class="text-justify">
-    <div class="alert alert-info text-center" role="alert">
+    <!-- <div class="alert alert-info text-center" role="alert">
       Op deze pagina kun je je inschrijven voor de activiteiten van de
       Transgendergroep Nijmegen. Bezoek
       <a href="http://www.transgendernijmegen.nl/">onze website</a> voor
       algemene informatie.
+    </div> -->
+
+    <div
+      ng-if="user && user.emailVerified"
+      class="alert alert-info"
+      role="alert"
+    >
+      Ingelogd als <b>{{userInfo.name}}</b>.
     </div>
 
     <div class="card">
@@ -186,14 +194,6 @@
               accountregistratie af te ronden, en <b>log daarna opnieuw in</b>,
               om je in te kunnen schrijven voor activiteiten.
             </div>
-
-            <div
-              ng-if="user && user.emailVerified"
-              class="alert alert-info"
-              role="alert"
-            >
-              Ingelogd als <b>{{userInfo.name}}</b>.
-            </div>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -277,7 +277,7 @@
         </div>
 
         <div class="tab-pane" id="register" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <div class="alert alert-info" role="alert">
               Door het aanmaken van een account geef je ons toestemming om je
               gegevens te bewaren tot je je account verwijderd of maximaal een
@@ -381,7 +381,7 @@
         </div>
 
         <div class="tab-pane" id="login" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <form id="loginForm" name="loginForm">
               <div class="row form-group">
                 <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
@@ -433,7 +433,7 @@
         </div>
 
         <div class="tab-pane" id="change_info" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Gegevens wijzigen</h5>
             <div class="alert alert-info" role="alert">
               Het ingevulde e-mailadres wordt ook je inlognaam.
@@ -502,7 +502,7 @@
         </div>
 
         <div class="tab-pane" id="change_password" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Wachtwoord wijzigen</h5>
             <form id="setPasswordForm" name="setPasswordForm">
               <div class="row form-group">
@@ -546,7 +546,7 @@
         </div>
 
         <div class="tab-pane" id="delete_account" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Account verwijderen</h5>
             <div class="alert alert-danger" role="alert">
               Weet je zeker dat je je account wilt verwijderen? Dit kan niet
@@ -584,7 +584,7 @@
         </div>
 
         <div class="tab-pane" id="admin_signups" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Inschrijvingen</h5>
             <div class="row">
               <select
@@ -613,37 +613,39 @@
             </div>
             <div ng-if="selected_event">
               <h6>Activiteit: {{eventListName(selected_event)}}</h6>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Naam</th>
-                    <th scope="col">E-mailadres</th>
-                    <th scope="col">Telefoonnummer</th>
-                    <th scope="col">Uitschrijven</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="(uid, bool) in selected_event.signups">
-                    <th scope="row">1</th>
-                    <td>{{users[uid].name}}</td>
-                    <td>{{users[uid].email}}</td>
-                    <td>{{users[uid].phone}}</td>
-                    <td>
-                      <a
-                        href=""
-                        ng-click="set_user_event_status(uid, selected_event, null)"
-                      >
-                        <svg class="bi text-danger" width="16" height="16">
-                          <use
-                            xlink:href="lib/bootstrap-icons.svg#x-square-fill"
-                          />
-                        </svg>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Naam</th>
+                      <th scope="col">E-mailadres</th>
+                      <th scope="col">Telefoonnummer</th>
+                      <th scope="col">Uitschrijven</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="(uid, bool) in selected_event.signups">
+                      <th scope="row">1</th>
+                      <td>{{users[uid].name}}</td>
+                      <td>{{users[uid].email}}</td>
+                      <td>{{users[uid].phone}}</td>
+                      <td>
+                        <a
+                          href=""
+                          ng-click="set_user_event_status(uid, selected_event, null)"
+                        >
+                          <svg class="bi text-danger" width="16" height="16">
+                            <use
+                              xlink:href="lib/bootstrap-icons.svg#x-square-fill"
+                            />
+                          </svg>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <div class="row">
                 <div class="col">
                   <form>
@@ -674,36 +676,38 @@
               <h6>
                 Account: {{selected_user.name+' ('+selected_user.email+')'}}
               </h6>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Datum</th>
-                    <th scope="col">Activiteit</th>
-                    <th scope="col">Uitschrijven</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    ng-repeat="event in events | orderBy:'date'"
-                    ng-if="event.signups[selected_user.$id]"
-                  >
-                    <td>{{event.date | date:"dd/MM/yyyy"}}</td>
-                    <td>{{event.name}}</td>
-                    <td>
-                      <a
-                        href=""
-                        ng-click="set_user_event_status(selected_user.$id, event, null)"
-                      >
-                        <svg class="bi text-danger" width="16" height="16">
-                          <use
-                            xlink:href="lib/bootstrap-icons.svg#x-square-fill"
-                          />
-                        </svg>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Datum</th>
+                      <th scope="col">Activiteit</th>
+                      <th scope="col">Uitschrijven</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      ng-repeat="event in events | orderBy:'date'"
+                      ng-if="event.signups[selected_user.$id]"
+                    >
+                      <td>{{event.date | date:"dd/MM/yyyy"}}</td>
+                      <td>{{event.name}}</td>
+                      <td>
+                        <a
+                          href=""
+                          ng-click="set_user_event_status(selected_user.$id, event, null)"
+                        >
+                          <svg class="bi text-danger" width="16" height="16">
+                            <use
+                              xlink:href="lib/bootstrap-icons.svg#x-square-fill"
+                            />
+                          </svg>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <div class="row">
                 <div class="col">
                   <form>
@@ -734,7 +738,7 @@
         </div>
 
         <div class="tab-pane" id="admin_new_event" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Nieuwe activiteit</h5>
             <form id="newEventForm" name="newEventForm">
               <div class="row form-group">
@@ -793,6 +797,16 @@
                   ng-model="form.no_registrations"
                 />
               </div>
+              <div class="row form-group">
+                <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
+                  >Onzichtbaar</label
+                >
+                <input
+                  type="checkbox"
+                  class="col form-control"
+                  ng-model="form.invisible"
+                />
+              </div>
             </form>
           </div>
           <div class="card-footer">
@@ -812,7 +826,7 @@
         </div>
 
         <div class="tab-pane" id="admin_events" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Activiteiten</h5>
             <form>
               <select
@@ -876,7 +890,7 @@
                 </div>
                 <div class="row form-group">
                   <label class="col-sm-4 col-lg-3 col-xl-2 col-form-label"
-                    >Geen registraties</label
+                    >Geen inschrijvingen</label
                   >
                   <input
                     type="checkbox"
@@ -923,7 +937,7 @@
         </div>
 
         <div class="tab-pane" id="admin_users" role="tabpanel">
-          <div class="card-body">
+          <div class="card-body p-0">
             <h5>Accounts</h5>
             <form>
               <select
