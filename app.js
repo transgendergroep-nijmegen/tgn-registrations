@@ -295,7 +295,7 @@ angular
       };
 
       $scope.count_event_signups = (event) =>
-        (event.fake_signups ?? 0) + Object.keys(event.signups ?? []).length;
+        (event.fake_signups || 0) + Object.keys(event.signups || []).length;
 
       $scope.eventListName = (event) =>
         `${$filter("date")(event.date, "dd/MM/yyyy")} - ${event.name}`;
