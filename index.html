@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
+<html style="all: unset" ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
   <head>
     <title>Transgendergroep Nijmegen Inschrijvingen</title>
     <link rel="stylesheet" href="lib/bootstrap.css" />
@@ -426,7 +426,6 @@
                 <button
                   type="button"
                   class="btn btn-warning w-100 h-100"
-                  style="background-color: #ffc107 !important"
                   ng-click="forgotpassword(form)"
                 >
                   Wachtwoord vergeten?
@@ -579,7 +578,6 @@
                   form="deleteAccountForm"
                   value="Account verwijderen"
                   class="btn btn-danger w-100 h-100"
-                  style="background-color: #dc3545 !important"
                   ng-click="deleteaccount(form)"
                   ng-disabled="working || deleteAccountForm.$invalid"
                 />
@@ -793,7 +791,6 @@
                   <input
                     type="text"
                     class="form-control"
-                    required
                     ng-model="form.link"
                   />
                 </div>
@@ -894,7 +891,6 @@
                     <input
                       type="text"
                       class="form-control"
-                      required
                       ng-model="edit_event.link"
                     />
                   </div>
@@ -950,7 +946,6 @@
                 <button
                   type="button"
                   class="btn btn-danger w-100 h-100"
-                  style="background-color: #dc3545 !important"
                   ng-click="deleteevent(selected_event)"
                 >
                   Activiteit verwijderen
