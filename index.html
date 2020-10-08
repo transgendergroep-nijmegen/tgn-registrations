@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="all: unset" ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
+<html ng-app="tgn-registrations" ng-controller="RegistrationsCtrl">
   <head>
     <title>Transgendergroep Nijmegen Inschrijvingen</title>
     <link rel="stylesheet" href="lib/bootstrap.css" />
@@ -294,7 +294,7 @@
                 activiteit bijwoont, geef je aan dat jouw antwoord op de
                 onderstaande vragen 'Nee' is.
               </p>
-              <ul>
+              <ul class="m-4" style="list-style: disc !important;">
                 <li>
                   Heb je last van Hoesten, Benauwdheidsklachten,
                   Neusverkoudheid, of Koorts van 38 graden of hoger?
@@ -426,6 +426,7 @@
                 <button
                   type="button"
                   class="btn btn-warning w-100 h-100"
+                  style="background-color: #ffc107 !important"
                   ng-click="forgotpassword(form)"
                 >
                   Wachtwoord vergeten?
@@ -578,6 +579,7 @@
                   form="deleteAccountForm"
                   value="Account verwijderen"
                   class="btn btn-danger w-100 h-100"
+                  style="background-color: #dc3545 !important"
                   ng-click="deleteaccount(form)"
                   ng-disabled="working || deleteAccountForm.$invalid"
                 />
@@ -946,6 +948,7 @@
                 <button
                   type="button"
                   class="btn btn-danger w-100 h-100"
+                  style="background-color: #dc3545 !important"
                   ng-click="deleteevent(selected_event)"
                 >
                   Activiteit verwijderen
