@@ -208,7 +208,7 @@ angular
       $scope.editevent = (event) => {
         $scope.working = true;
         let index = $scope.events.$indexFor(event.$id);
-        $scope.events[index] = event;
+        $scope.events[index] = $scope.copy(event);
         $scope.events
           .$save(index)
           .then(() => {
@@ -250,7 +250,7 @@ angular
           user.admin = null;
         }
         let index = $scope.usersArray.$indexFor(user.$id);
-        $scope.usersArray[index] = user;
+        $scope.usersArray[index] = $scope.copy(user);
         $scope.usersArray
           .$save(index)
           .then(() => {
