@@ -20,6 +20,8 @@ angular
       $scope.admins = $firebaseObject(firebase.database().ref("admins"));
       $scope.events = $firebaseArray(firebase.database().ref("events"));
 
+      $scope.EVENT_GRACE = 60 * 60 * 1000;
+
       $interval(() => {
         $scope.now = Date.now();
       }, 1000);
