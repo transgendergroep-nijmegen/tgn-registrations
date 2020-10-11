@@ -29,6 +29,13 @@ angular
       $scope.authObj.$onAuthStateChanged((user) => {
         $scope.user = user;
         if (user) {
+          if(!user.emailVerified){
+            $scope.authObj.$signOut();
+            $scope.show_toast("Volg de instructies in de bevestigings-e-mail om de accountregistratie af te ronden, en log daarna opnieuw in.");
+            $scope.showTab("login");
+            return;
+          }
+
           // Set $scope.userInfo.
           $firebaseObject(firebase.database().ref(`users/${user.uid}`))
             .$loaded()
@@ -145,7 +152,6 @@ angular
           .ref(`users/${user.uid}`)
           .set(userInfo)
           .then(() => {
-            $scope.show_toast("Gegevens succesvol aangepast.");
             $scope.userInfo = userInfo;
             $scope.working = false;
           })
@@ -263,13 +269,14 @@ angular
 
       $scope.deleteaccount = (form) => {
         $scope.working = true;
+        let email = $scope.user.email;
         if (
           confirm(
-            `Weet je zeker dat je de account van ${scope.user.email} wilt verwijderen?`
+            `Weet je zeker dat je de account van ${email} wilt verwijderen?`
           )
         ) {
           $scope.authObj
-            .$signInWithEmailAndPassword($scope.user.email, form.password)
+            .$signInWithEmailAndPassword(email, form.password)
             .then((user) => {
               $scope.events.forEach((event) => {
                 if (event.date > $scope.now)
@@ -277,7 +284,7 @@ angular
                 $scope.authObj
                   .$deleteUser()
                   .then(() => {
-                    $scope.show_toast(`Account '${user.email}' is verwijderd.`);
+                    $scope.show_toast(`Account '${email}' is verwijderd.`);
                     $scope.showTab("events");
                     $scope.working = false;
                   })
