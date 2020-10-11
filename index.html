@@ -627,7 +627,7 @@
                   </thead>
                   <tbody>
                     <tr ng-repeat="(uid, bool) in selected_event.signups">
-                      <th scope="row">1</th>
+                      <th scope="row">{{$index+1}}</th>
                       <td>{{users[uid].name}}</td>
                       <td>{{users[uid].email}}</td>
                       <td>{{users[uid].phone}}</td>
