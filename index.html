@@ -231,8 +231,14 @@
                             class="badge badge"
                             ng-class="count_event_signups(event) < event.capacity && now < event.date - EVENT_GRACE ? 'badge-primary' : 'badge-secondary'"
                             style="width: 5em; float: right; text-align: center"
-                            >{{count_event_signups(event)}}/{{event.capacity}}</span
-                          >
+                            >
+                            <span ng-if="admins[user.uid]">
+                              {{admin_event_signups(event)}} / {{event.capacity}}
+                            </span>
+                            <span ng-if="!admins[user.uid]">
+                              {{count_event_signups(event)}}/{{event.capacity}}
+                            </span>
+                          </span>
                         </div>
                         <div class="col pl-1">
                           <div class="progress">
