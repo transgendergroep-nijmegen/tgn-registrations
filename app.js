@@ -307,7 +307,7 @@ angular
         (event.fake_signups || 0) + Object.keys(event.signups || []).length;
       
       $scope.admin_event_signups = (event) =>
-        `${Object.keys(event.signups || []).length}${event.fake_signups > 0 ? "+" : "" }${event.fake_signups != 0 ? event.fake_signups : ""}`;
+        `${Object.keys(event.signups || []).length}${event.fake_signups > 0 ? "+" : "" }${event.fake_signups ? event.fake_signups : ""}`;
 
       $scope.eventListName = (event) =>
         `${$filter("date")(event.date, "dd/MM/yyyy")} - ${event.name}`;
