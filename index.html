@@ -270,6 +270,7 @@
                         />
                         <label
                           class="custom-control-label"
+                          ng-style="{ 'cursor' : (now >= event.date - EVENT_GRACE || count_event_signups(event) >= event.capacity && !event.signups[user.uid]) ? 'auto' : 'pointer' }"
                           for="customSwitch_{{event.$id}}"
                         ></label>
                       </div>
